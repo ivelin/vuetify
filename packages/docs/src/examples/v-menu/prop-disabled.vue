@@ -1,16 +1,10 @@
 <template>
   <div class="text-center">
-    <v-menu
-      disabled
-      top
-      offset-y
-    >
-      <template v-slot:activator="{ on, attrs }">
+    <v-menu disabled>
+      <template v-slot:activator="{ props }">
         <v-btn
           color="primary"
-          dark
-          v-bind="attrs"
-          v-on="on"
+          v-bind="props"
         >
           Dropdown
         </v-btn>
@@ -27,6 +21,15 @@
     </v-menu>
   </div>
 </template>
+
+<script setup>
+  const items = [
+    { title: 'Click Me' },
+    { title: 'Click Me' },
+    { title: 'Click Me' },
+    { title: 'Click Me 2' },
+  ]
+</script>
 
 <script>
   export default {

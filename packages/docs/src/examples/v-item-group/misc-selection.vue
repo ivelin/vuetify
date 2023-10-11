@@ -5,7 +5,7 @@
   >
     <v-container class="pa-1">
       <v-item-group
-        v-model="selected"
+        v-model="selection"
         multiple
       >
         <v-row>
@@ -15,21 +15,15 @@
             cols="12"
             md="6"
           >
-            <v-item v-slot="{ active, toggle }">
+            <v-item v-slot="{ isSelected, toggle }">
               <v-img
                 :src="`https://cdn.vuetifyjs.com/images/${item.src}`"
+                cover
                 height="150"
                 class="text-right pa-2"
                 @click="toggle"
               >
-                <v-btn
-                  icon
-                  dark
-                >
-                  <v-icon>
-                    {{ active ? 'mdi-heart' : 'mdi-heart-outline' }}
-                  </v-icon>
-                </v-btn>
+                <v-btn :icon="isSelected ? 'mdi-heart' : 'mdi-heart-outline'"></v-btn>
               </v-img>
             </v-item>
           </v-col>
@@ -38,6 +32,27 @@
     </v-container>
   </v-card>
 </template>
+
+<script setup>
+  import { ref } from 'vue'
+
+  const items = [
+    {
+      src: 'backgrounds/bg.jpg',
+    },
+    {
+      src: 'backgrounds/md.jpg',
+    },
+    {
+      src: 'backgrounds/bg-2.jpg',
+    },
+    {
+      src: 'backgrounds/md2.jpg',
+    },
+  ]
+
+  const selection = ref([])
+</script>
 
 <script>
   export default {
@@ -56,7 +71,7 @@
           src: 'backgrounds/md2.jpg',
         },
       ],
-      selected: [],
+      selection: [],
     }),
   }
 </script>

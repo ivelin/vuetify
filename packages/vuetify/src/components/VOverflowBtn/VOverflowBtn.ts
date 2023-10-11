@@ -1,3 +1,6 @@
+// @ts-nocheck
+/* eslint-disable */
+
 // Styles
 import './VOverflowBtn.sass'
 
@@ -39,6 +42,9 @@ export default VAutocomplete.extend({
     },
     computedItems (): object[] {
       return this.segmented ? this.allItems : this.filteredItems
+    },
+    labelValue (): boolean {
+      return (this.isFocused && !this.persistentPlaceholder) || this.isLabelActive
     },
   },
 

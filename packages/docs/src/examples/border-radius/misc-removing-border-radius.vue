@@ -1,14 +1,11 @@
-
 <template>
-  <v-row justify="center">
-    <v-col
-      cols="12"
-      md="3"
-    >
-      <div
-        class="pa-4 text-center secondary rounded-0"
-        v-text="`.rounded-0`"
-      ></div>
-    </v-col>
-  </v-row>
+  <div class="d-flex justify-space-around">
+    <div class="pa-4 text-center bg-secondary rounded-0">
+      .rounded-0
+    </div>
+
+    <div class="pa-4 text-center bg-secondary rounded-xl rounded-be-0">
+      .rounded-xl .rounded-be-0
+    </div>
+  </div>
 </template>

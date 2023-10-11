@@ -1,5 +1,6 @@
 export default {
   badge: 'Skilt',
+  open: 'Open',
   close: 'Lukk',
   dataIterator: {
     noResultsText: 'Fant ingen matchende elementer.',
@@ -26,12 +27,21 @@ export default {
     lastPage: 'Siste side',
     pageText: '{0}-{1} av {2}',
   },
+  dateRangeInput: {
+    divider: 'til',
+  },
   datePicker: {
-    itemsSelected: '{0} valgt',
-    nextMonthAriaLabel: 'Neste måned',
-    nextYearAriaLabel: 'Neste år',
-    prevMonthAriaLabel: 'Forrige måned',
-    prevYearAriaLabel: 'Forrige år',
+    ok: 'OK',
+    cancel: 'Avbryt',
+    range: {
+      title: 'Velg datoer',
+      header: 'Velg datoer',
+    },
+    title: 'Velg dato',
+    header: 'Velg dato',
+    input: {
+      placeholder: 'Fyll inn dato',
+    },
   },
   noDataText: 'Ingen data er tilgjengelig',
   carousel: {
@@ -44,6 +54,12 @@ export default {
   calendar: {
     moreEvents: '{0} flere',
   },
+  input: {
+    clear: 'Fjern {0}',
+    prependAction: '{0} prepended action',
+    appendAction: '{0} appended action',
+    otp: 'Please enter OTP character {0}',
+  },
   fileInput: {
     counter: '{0} filer',
     counterSize: '{0} filer ({1} totalt)',
@@ -54,16 +70,27 @@ export default {
   },
   pagination: {
     ariaLabel: {
-      wrapper: 'Paginasjonsnavigasjon',
+      root: 'Paginasjonsnavigasjon',
       next: 'Neste side',
       previous: 'Forrige side',
       page: 'Gå til side {0}',
       currentPage: 'Gjeldende side, side {0}',
+      first: 'Første side',
+      last: 'Siste side',
     },
+  },
+  stepper: {
+    next: 'Neste',
+    prev: 'Forrige',
   },
   rating: {
     ariaLabel: {
-      icon: 'Rating {0} of {1}',
+      item: 'Anmeldelse {0} av {1}',
     },
+  },
+  loading: 'Laster...',
+  infiniteScroll: {
+    loadMore: 'Last flere',
+    empty: 'Det var alt',
   },
 }

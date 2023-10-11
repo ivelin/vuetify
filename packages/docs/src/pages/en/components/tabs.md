@@ -1,5 +1,6 @@
 ---
 meta:
+  nav: Tabs
   title: Tabs component
   description: The tabs component provides a way to organize and navigate between groups of content that are related at the same level of hierarchy.
   keywords: tabs, vuetify tabs component, vue tabs component
@@ -7,77 +8,58 @@ related:
   - /components/icons/
   - /components/toolbars/
   - /components/windows/
+features:
+  figma: true
+  label: 'C: VTabs'
+  report: true
+  github: /components/VTabs/
+  spec: https://m2.material.io/components/tabs
 ---
 
 # Tabs
 
 The `v-tabs` component is used for hiding content behind a selectable item. This can also be used as a pseudo-navigation for a page, where the tabs are links and the tab-items are the content.
 
-<entry-ad />
+<page-features />
 
 ## Usage
 
-The `v-tabs` component is a styled extension of [v-item-group](/components/item-groups). It provides an easy to use interface for organizing groups of content.
+The `v-tabs` component is a styled extension of [v-slide-group](/components/slide-groups). It provides an easy to use interface for organizing content into separate sections.
 
 <example file="v-tabs/usage" />
 
+<entry />
+
 ## API
 
-- [v-tabs](/api/v-tabs)
-- [v-tab](/api/v-tab)
-- [v-tab-item](/api/v-tab-item)
-- [v-tabs-items](/api/v-tabs-items)
-- [v-tabs-slider](/api/v-tabs-slider)
+| Component | Description |
+| - | - |
+| [v-tabs](/api/v-tabs/) | Primary Component |
+| [v-tab](/api/v-tab/) | Sub-component used for modifying the `v-tabs` state |
 
-<inline-api page="components/tabs" />
-
-<!-- ## Sub-components
-
-### v-tab
-
-v-tab description
-
-### v-tab-item
-
-v-tab-item description
-
-### v-tabs-items
-
-v-tabs-items description
-
-### v-tabs-slider
-
-v-tabs-slider description -->
-
-## Caveats
-
-<alert type="warning">
-
-  When using the **dark** prop and **NOT** providing a custom **color**, the `v-tabs` component will default its color to _white_.
-
-</alert>
-
-<alert type="warning">
-
-  When using `v-tab-item`'s that contain required input fields you must use the **eager** prop in order to validate the required fields that are not yet visible.
-
-</alert>
+<api-inline hide-links />
 
 ## Examples
 
 ### Props
 
-#### Align with title
+#### Align tabs
 
-Make `v-tabs` lined up with the `v-toolbar-title` component using the **align-with-title** prop (`v-app-bar-nav-icon` or `v-btn` must be used in `v-toolbar`).
+The **align-tabs** prop will align tabs to the `start`, `center`, or `end` of its container.
 
-<example file="v-tabs/prop-align-with-title" />
+<example file="v-tabs/prop-align-tabs-center" />
 
-<promoted-ad slug="vuetify-zero-theme-pro" />
+<example file="v-tabs/prop-align-tabs-end" />
+
+#### Align tabs with title
+
+Make `v-tabs` line up with the `v-toolbar-title` component by setting the **align-tabs** prop to `title` (`v-app-bar-nav-icon` or `v-btn` must be used in `v-toolbar`).
+
+<example file="v-tabs/prop-align-tabs-title" />
 
 #### Center active
 
-The **center-active** prop will make the active tab always centered
+The **center-active** prop will make the active tab always centered.
 
 <example file="v-tabs/prop-center-active" />
 
@@ -89,21 +71,21 @@ The **center-active** prop will make the active tab always centered
 
 #### Fixed tabs
 
-The **fixed-tabs** prop forces `v-tab` to take up all available space up to the maximum width (300px).
+The **fixed-tabs** prop forces `v-tab` items to take up all available space up to their maximum width (300px), and centers them.
 
 <example file="v-tabs/prop-fixed-tabs" />
 
 #### Grow
 
-The **grow** prop will make the tab items take up all available space up to a maximum width of 300px.
+The **grow** prop will make the tab items take up all available space with no limit.
 
 <example file="v-tabs/prop-grow" />
 
-#### Icons and text
+#### Stacked
 
-Using **icons-with-text** prop increases the `v-tabs` height to 72px to allow for both icons as well as text to be used.
+Using **stacked** increases the `v-tabs` height to 72px to allow for both icons and text to be displayed.
 
-<example file="v-tabs/prop-icons-and-text" />
+<example file="v-tabs/prop-stacked" />
 
 #### Pagination
 
@@ -111,41 +93,29 @@ If the tab items overflow their container, pagination controls will appear on de
 
 <example file="v-tabs/misc-pagination" />
 
-#### Right
+#### Vertical tabs
 
-The **right** prop aligns the tabs to the right.
+The **direction** prop allows for `v-tab` components to stack vertically.
 
-<example file="v-tabs/prop-right" />
-
-#### Vertical Tabs
-
-The **vertical** prop allows for `v-tab` components to stack vertically.
-
-<example file="v-tabs/prop-vertical" />
+<example file="v-tabs/prop-direction" />
 
 ### Misc
 
 #### Content
 
-It is common to put `v-tabs` inside the **extension** slot of `v-toolbar`. Using `v-toolbar`'s **tabs** prop auto adjusts its height to 48px to match `v-tabs`.
+It is common to put `v-tabs` inside the **extension** slot of `v-toolbar`.
 
 <example file="v-tabs/misc-content" />
 
-#### Desktop tabs
+#### Mobile tabs
 
-You can represent `v-tab` actions by using single icons. This is useful when it is easy to correlate content to each tab.
+On mobile you can use `v-tab` items with just icons to conserve space.
 
-<example file="v-tabs/misc-desktop" />
-
-#### Dynamic height
-
-When changing your `v-tab-item`, the content area will smoothly scale to the new size.
-
-<example file="v-tabs/misc-dynamic-height" />
+<example file="v-tabs/misc-mobile" />
 
 #### Dynamic Tabs
 
-Tabs can be dynamically added and removed. This allows you to update to any number and the `v-tabs` component will react. In this example when we add a new tab, we automatically change our model to match. As we add more tabs and overflow the container, the selected item will be automatically scrolled into view. Remove all `v-tab`s and the slider will disappear.
+Tabs can be dynamically added and removed. In this example when we add a new tab, we automatically change our model to match. As we add more tabs and overflow the container, the selected item will be automatically scrolled into view. Remove all `v-tab` items and the slider will disappear.
 
 <example file="v-tabs/misc-dynamic" />
 
@@ -154,11 +124,3 @@ Tabs can be dynamically added and removed. This allows you to update to any numb
 You can use a menu to hold additional tabs, swapping them out on the fly.
 
 <example file="v-tabs/misc-overflow-to-menu" />
-
-#### Tab Items
-
-The `v-tabs-items` component allows for you to customize the content per tab. Using a shared `v-model`, the `v-tabs-items` will sync with the currently selected `v-tab`.
-
-<example file="v-tabs/misc-tab-items" />
-
-<backmatter />

@@ -1,17 +1,7 @@
 <template>
-  <v-app>
-    <v-main>
-      <playground></playground>
-    </v-main>
-  </v-app>
+  <Playground />
 </template>
 
-<script>
-  import Playground from './Playground'
-
-  export default {
-    components: {
-      Playground,
-    },
-  }
+<script setup>
+  import Playground from './Playground.vue'
 </script>

@@ -1,5 +1,6 @@
 ---
 meta:
+  nav: Textareas
   title: Textarea component
   description: The textarea component is a text field that accepts lengthy textual input from users.
   keywords: textareas, vuetify textarea component, vue textarea component
@@ -7,25 +8,34 @@ related:
   - /components/forms/
   - /components/selects/
   - /components/text-fields/
+features:
+  label: 'C: VTextarea'
+  report: true
+  github: /components/VTextarea/
+  spec: https://m2.material.io/components/text-fields#input-types
 ---
 
 # Textareas
 
 Textarea components are used for collecting large amounts of textual data.
 
-<entry-ad />
+<page-features />
 
 ## Usage
 
 `v-textarea` in its simplest form is a multi-line text-field, useful for larger amounts of text.
 
-<example file="v-textarea/usage" />
+<usage name="v-textarea" />
+
+<entry />
 
 ## API
 
-- [v-textarea](/api/v-textarea)
+| Component | Description |
+| - | - |
+| [v-textarea](/api/v-textarea/) | Primary Component |
 
-<inline-api page="components/textareas" />
+<api-inline hide-links />
 
 ## Examples
 
@@ -86,5 +96,3 @@ The `rows` prop allows you to define how many rows the textarea has, when combin
 Utilizing alternative input styles, you can create amazing interfaces that are easy to build and easy to use.
 
 <example file="v-textarea/misc-signup-form" />
-
-<backmatter />

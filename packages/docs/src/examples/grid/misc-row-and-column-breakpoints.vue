@@ -1,49 +1,45 @@
 <template>
-  <v-container class="grey lighten-5">
+  <v-container class="bg-surface-variant">
     <v-row
       class="mb-6"
       no-gutters
     >
-      <v-col
-        v-for="n in 2"
-        :key="n"
-        :lg="cols[n - 1]"
-        :md="6"
-        :sm="cols[n - 1]"
-      >
-        <v-card
-          class="pa-2"
-          outlined
-          tile
-        >
-          col-{{ cols[n - 1] }}
-        </v-card>
+      <v-col :cols="cols[0]">
+        <v-sheet class="pa-2 ma-2">
+          .v-col-{{ cols[0] }}
+        </v-sheet>
       </v-col>
-    </v-row>
-    <v-row no-gutters>
-      <v-col
-        v-for="n in 3"
-        :key="n"
-        cols="sm"
-      >
-        <v-card
-          class="pa-2"
-          outlined
-          tile
-        >
-          col
-        </v-card>
+
+      <v-col :cols="cols[1]">
+        <v-sheet class="pa-2 ma-2">
+          .v-col-{{ cols[1] }}
+        </v-sheet>
       </v-col>
     </v-row>
   </v-container>
 </template>
 
+<script setup>
+  import { computed } from 'vue'
+  import { useDisplay } from 'vuetify'
+
+  const { lg, sm } = useDisplay()
+
+  const cols = computed(() => {
+    return lg.value ? [3, 9]
+      : sm.value ? [9, 3]
+        : [6, 6]
+  })
+</script>
+
 <script>
   export default {
     computed: {
       cols () {
-        const { lg, sm } = this.$vuetify.breakpoint
-        return lg ? [3, 9] : sm ? [9, 3] : [6, 6]
+        const { lg, sm } = this.$vuetify.display
+        return lg ? [3, 9]
+          : sm ? [9, 3]
+            : [6, 6]
       },
     },
   }

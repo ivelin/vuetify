@@ -1,4 +1,6 @@
-import './_grid.sass'
-import { createSimpleFunctional } from '../../util/helpers'
+// Utilities
+import { createSimpleFunctional } from '@/util'
 
-export default createSimpleFunctional('spacer', 'div', 'v-spacer')
+export const VSpacer = createSimpleFunctional('v-spacer', 'div', 'VSpacer')
+
+export type VSpacer = InstanceType<typeof VSpacer>

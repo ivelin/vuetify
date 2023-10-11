@@ -8,12 +8,10 @@
       dense
     >
       <v-toolbar-title>
-        <span class="subheading">METRONOME</span>
+        <span class="text-subheading">METRONOME</span>
       </v-toolbar-title>
       <v-spacer></v-spacer>
-      <v-btn icon>
-        <v-icon>mdi-share-variant</v-icon>
-      </v-btn>
+      <v-btn variant="text" icon="mdi-share-variant"></v-btn>
     </v-toolbar>
 
     <v-card-text>
@@ -26,7 +24,7 @@
             class="text-h2 font-weight-light"
             v-text="bpm"
           ></span>
-          <span class="subheading font-weight-light mr-1">BPM</span>
+          <span class="subheading font-weight-light me-1">BPM</span>
           <v-fade-transition>
             <v-avatar
               v-if="isPlaying"
@@ -42,14 +40,12 @@
         <v-col class="text-right">
           <v-btn
             :color="color"
-            dark
-            depressed
-            fab
+            theme="dark"
+            icon
+            elevation="0"
             @click="toggle"
           >
-            <v-icon large>
-              {{ isPlaying ? 'mdi-pause' : 'mdi-play' }}
-            </v-icon>
+            <v-icon size="large" :icon="isPlaying ? 'mdi-pause' : 'mdi-play'"></v-icon>
           </v-btn>
         </v-col>
       </v-row>
@@ -58,37 +54,66 @@
         v-model="bpm"
         :color="color"
         track-color="grey"
-        always-dirty
         min="40"
         max="218"
+        :step="1"
       >
         <template v-slot:prepend>
-          <v-icon
+          <v-btn
+            size="small"
+            variant="text"
+            icon="mdi-minus"
             :color="color"
             @click="decrement"
-          >
-            mdi-minus
-          </v-icon>
+          ></v-btn>
         </template>
 
         <template v-slot:append>
-          <v-icon
+          <v-btn
+            size="small"
+            variant="text"
+            icon="mdi-plus"
             :color="color"
             @click="increment"
-          >
-            mdi-plus
-          </v-icon>
+          ></v-btn>
         </template>
       </v-slider>
     </v-card-text>
   </v-card>
 </template>
 
+<script setup>
+  import { computed, ref } from 'vue'
+
+  const bpm = ref(40)
+  const isPlaying = ref(false)
+
+  const color = computed(() => {
+    if (bpm.value < 100) return 'indigo'
+    if (bpm.value < 125) return 'teal'
+    if (bpm.value < 140) return 'green'
+    if (bpm.value < 175) return 'orange'
+    return 'red'
+  })
+  const animationDuration = computed(() => {
+    return `${60 / bpm.value}s`
+  })
+
+  function decrement () {
+    bpm.value--
+  }
+  function increment () {
+    bpm.value++
+  }
+  function toggle () {
+    isPlaying.value = !isPlaying.value
+  }
+</script>
+
 <script>
   export default {
     data: () => ({
       bpm: 40,
-      interval: null,
       isPlaying: false,
     }),
 

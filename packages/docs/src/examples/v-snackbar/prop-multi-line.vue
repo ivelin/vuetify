@@ -1,8 +1,7 @@
 <template>
   <div class="text-center">
     <v-btn
-      dark
-      color="red darken-2"
+      color="red-darken-2"
       @click="snackbar = true"
     >
       Open Snackbar
@@ -10,15 +9,14 @@
 
     <v-snackbar
       v-model="snackbar"
-      :multi-line="multiLine"
+      multi-line
     >
       {{ text }}
 
-      <template v-slot:action="{ attrs }">
+      <template v-slot:actions>
         <v-btn
           color="red"
-          text
-          v-bind="attrs"
+          variant="text"
           @click="snackbar = false"
         >
           Close
@@ -28,12 +26,19 @@
   </div>
 </template>
 
+<script setup>
+  import { ref } from 'vue'
+
+  const snackbar = ref(false)
+
+  const text = `I am a multi-line snackbar.\nI can have more than one line. This is another line that is quite long.`
+</script>
+
 <script>
   export default {
     data: () => ({
-      multiLine: true,
       snackbar: false,
-      text: `I'm a multi-line snackbar.`,
+      text: `I am a multi-line snackbar.\nI can have more than one line. This is another line that is quite long.`,
     }),
   }
 </script>

@@ -1,5 +1,6 @@
 export default {
   badge: 'Lencana',
+  open: 'Open',
   close: 'Tutup',
   dataIterator: {
     noResultsText: 'Tidak ditemukan catatan yang cocok',
@@ -26,12 +27,21 @@ export default {
     lastPage: 'Halaman terakhir',
     pageText: '{0}-{1} dari {2}',
   },
+  dateRangeInput: {
+    divider: 'to',
+  },
   datePicker: {
-    itemsSelected: '{0} dipilih',
-    nextMonthAriaLabel: 'Bulan depan',
-    nextYearAriaLabel: 'Tahun depan',
-    prevMonthAriaLabel: 'Bulan sebelumnya',
-    prevYearAriaLabel: 'Tahun sebelumnya',
+    ok: 'OK',
+    cancel: 'Cancel',
+    range: {
+      title: 'Select dates',
+      header: 'Enter dates',
+    },
+    title: 'Select date',
+    header: 'Enter date',
+    input: {
+      placeholder: 'Enter date',
+    },
   },
   noDataText: 'Tidak ada data tersedia',
   carousel: {
@@ -44,6 +54,12 @@ export default {
   calendar: {
     moreEvents: '{0} lagi',
   },
+  input: {
+    clear: 'Clear {0}',
+    prependAction: '{0} prepended action',
+    appendAction: '{0} appended action',
+    otp: 'Please enter OTP character {0}',
+  },
   fileInput: {
     counter: '{0} berkas',
     counterSize: '{0} berkas (dari total {1})',
@@ -54,16 +70,27 @@ export default {
   },
   pagination: {
     ariaLabel: {
-      wrapper: 'Navigasi Pagination',
+      root: 'Navigasi Pagination',
       next: 'Halaman selanjutnya',
       previous: 'Halaman sebelumnya',
       page: 'Buka halaman {0}',
       currentPage: 'Halaman Saat Ini, Halaman {0}',
+      first: 'First page',
+      last: 'Last page',
     },
+  },
+  stepper: {
+    next: 'Next',
+    prev: 'Previous',
   },
   rating: {
     ariaLabel: {
-      icon: 'Rating {0} of {1}',
+      item: 'Rating {0} of {1}',
     },
+  },
+  loading: 'Loading...',
+  infiniteScroll: {
+    loadMore: 'Load more',
+    empty: 'No more',
   },
 }

@@ -1,5 +1,6 @@
 export default {
   badge: 'Značka',
+  open: 'Open',
   close: 'Zapri',
   dataIterator: {
     noResultsText: 'Ni iskanega zapisa',
@@ -26,12 +27,21 @@ export default {
     lastPage: 'Zadnja stran',
     pageText: '{0}-{1} od {2}',
   },
+  dateRangeInput: {
+    divider: 'to',
+  },
   datePicker: {
-    itemsSelected: '{0} izbrano/-ih',
-    nextMonthAriaLabel: 'Naslednji mesec',
-    nextYearAriaLabel: 'Naslednje leto',
-    prevMonthAriaLabel: 'Prejšnji mesec',
-    prevYearAriaLabel: 'Prejšnje leto',
+    ok: 'OK',
+    cancel: 'Cancel',
+    range: {
+      title: 'Select dates',
+      header: 'Enter dates',
+    },
+    title: 'Select date',
+    header: 'Enter date',
+    input: {
+      placeholder: 'Enter date',
+    },
   },
   noDataText: 'Ni podatkov',
   carousel: {
@@ -44,6 +54,12 @@ export default {
   calendar: {
     moreEvents: 'Še {0}',
   },
+  input: {
+    clear: 'Clear {0}',
+    prependAction: '{0} prepended action',
+    appendAction: '{0} appended action',
+    otp: 'Please enter OTP character {0}',
+  },
   fileInput: {
     counter: '{0} datotek',
     counterSize: '{0} datotek ({1} skupno)',
@@ -54,16 +70,27 @@ export default {
   },
   pagination: {
     ariaLabel: {
-      wrapper: 'Navigacija po strani po strani',
+      root: 'Navigacija po strani po strani',
       next: 'Naslednja stran',
       previous: 'Prejšnja stran',
       page: 'Pojdi na stran {0}',
       currentPage: 'Trenutna stran, stran {0}',
+      first: 'First page',
+      last: 'Last page',
     },
+  },
+  stepper: {
+    next: 'Next',
+    prev: 'Previous',
   },
   rating: {
     ariaLabel: {
-      icon: 'Rating {0} of {1}',
+      item: 'Rating {0} of {1}',
     },
+  },
+  loading: 'Loading...',
+  infiniteScroll: {
+    loadMore: 'Load more',
+    empty: 'No more',
   },
 }

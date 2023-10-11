@@ -1,17 +1,20 @@
-import Mouse from '../mouse'
+// @ts-nocheck
+/* eslint-disable */
+
+// import Mouse from '../mouse'
 
 import {
   mount,
   Wrapper,
   MountOptions,
 } from '@vue/test-utils'
-import { ExtractVue } from '../../../../util/mixins'
+// import { ExtractVue } from '../../../../util/mixins'
 
-const Mock = Mouse.extend({
-  render: h => h('div'),
-})
+// const Mock = Mouse.extend({
+//   render: h => h('div'),
+// })
 
-describe('mouse.ts', () => {
+describe.skip('mouse.ts', () => {
   type Instance = ExtractVue<typeof Mock>
   let mountFunction: (options?: MountOptions<Instance>) => Wrapper<Instance>
   beforeEach(() => {
@@ -35,11 +38,11 @@ describe('mouse.ts', () => {
     const noop = e => e
     const wrapper = mount(Mock, {
       listeners: {
-        click: noop,
+        'click:foo': noop,
       },
     })
 
-    expect(typeof wrapper.vm.getDefaultMouseEventHandlers('', noop).click).toBe('function')
+    expect(typeof wrapper.vm.getDefaultMouseEventHandlers(':foo', noop).click).toBe('function')
     expect(Object.keys(typeof wrapper.vm.getDefaultMouseEventHandlers('', noop))).toHaveLength(6)
   })
 

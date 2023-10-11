@@ -6,18 +6,17 @@
       :rounded="rounded"
       offset-y
     >
-      <template v-slot:activator="{ attrs, on }">
+      <template v-slot:activator="{ props }">
         <v-btn
           :color="colors[index]"
-          class="white--text ma-5"
-          v-bind="attrs"
-          v-on="on"
+          class="text-white ma-5"
+          v-bind="props"
         >
           {{ text }} Radius
         </v-btn>
       </template>
 
-      <v-list>
+      <v-list :rounded="rounded">
         <v-list-item
           v-for="item in items"
           :key="item"
@@ -29,6 +28,16 @@
     </v-menu>
   </v-row>
 </template>
+
+<script setup>
+  const btns = [
+    ['Removed', '0'],
+    ['Large', 'lg'],
+    ['Custom', 'b-xl'],
+  ]
+  const colors = ['deep-purple accent-4', 'error', 'teal darken-1']
+  const items = Array.from({ length: 4 }, (_, i) => `Item ${i}`)
+</script>
 
 <script>
   export default {

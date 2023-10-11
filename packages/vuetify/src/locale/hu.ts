@@ -1,5 +1,6 @@
 export default {
   badge: 'Jelvény',
+  open: 'Open',
   close: 'Bezárás',
   dataIterator: {
     noResultsText: 'Nincs egyező találat',
@@ -26,12 +27,21 @@ export default {
     lastPage: 'Utolsó oldal',
     pageText: '{0}-{1} / {2}',
   },
+  dateRangeInput: {
+    divider: 'to',
+  },
   datePicker: {
-    itemsSelected: '{0} kiválasztva',
-    nextMonthAriaLabel: 'Következő hónap',
-    nextYearAriaLabel: 'Következő év',
-    prevMonthAriaLabel: 'Előző hónap',
-    prevYearAriaLabel: 'Előző év',
+    ok: 'OK',
+    cancel: 'Cancel',
+    range: {
+      title: 'Select dates',
+      header: 'Enter dates',
+    },
+    title: 'Select date',
+    header: 'Enter date',
+    input: {
+      placeholder: 'Enter date',
+    },
   },
   noDataText: 'Nincs elérhető adat',
   carousel: {
@@ -44,6 +54,12 @@ export default {
   calendar: {
     moreEvents: '{0} további',
   },
+  input: {
+    clear: 'Clear {0}',
+    prependAction: '{0} prepended action',
+    appendAction: '{0} appended action',
+    otp: 'Please enter OTP character {0}',
+  },
   fileInput: {
     counter: '{0} fájl',
     counterSize: '{0} fájl ({1} összesen)',
@@ -54,16 +70,27 @@ export default {
   },
   pagination: {
     ariaLabel: {
-      wrapper: 'Oldal navigáció',
+      root: 'Oldal navigáció',
       next: 'Következő oldal',
       previous: 'Előző oldal',
       page: 'Menj a(z) {0}. oldalra',
       currentPage: 'Aktuális oldal: {0}',
+      first: 'First page',
+      last: 'Last page',
     },
+  },
+  stepper: {
+    next: 'Next',
+    prev: 'Previous',
   },
   rating: {
     ariaLabel: {
-      icon: 'Rating {0} of {1}',
+      item: 'Rating {0} of {1}',
     },
+  },
+  loading: 'Loading...',
+  infiniteScroll: {
+    loadMore: 'Load more',
+    empty: 'No more',
   },
 }

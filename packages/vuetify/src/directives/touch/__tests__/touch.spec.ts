@@ -1,34 +1,29 @@
 // Directives
 import Touch from '../'
 
-// Libraries
-import Vue from 'vue'
-
 // Utilities
-import {
-  mount,
-  Wrapper,
-} from '@vue/test-utils'
-import { touch } from '../../../../test'
+import { describe, expect, it } from '@jest/globals'
+import { mount } from '@vue/test-utils'
+import { nextTick } from 'vue'
+import { touch } from '@/../test'
 
-describe('touch.ts', () => {
-  let mountFunction: (value?: object) => Wrapper<Vue>
+// Types
+import type { TouchValue } from '../'
 
-  beforeEach(() => {
-    mountFunction = (value = {}) => {
-      return mount(Vue.component('test', {
-        directives: { Touch },
-        render: h => h('div', {
-          directives: [{
-            name: 'touch',
-            value,
-          }],
-        }),
-      }))
-    }
-  })
+describe('v-touch', () => {
+  const mountFunction = (value: TouchValue): Element => {
+    const wrapper = mount({
+      directives: { Touch },
+      props: {
+        value: Object,
+      },
+      template: '<div class="test" v-touch="value" />',
+    }, { props: { value } })
 
-  it('should call directive handlers', async () => {
+    return wrapper.element
+  }
+
+  it('should call directive handlers', () => {
     const down = jest.fn()
     touch(mountFunction({ down })).start(0, 0).end(0, 20)
     expect(down).toHaveBeenCalled()
@@ -84,13 +79,27 @@ describe('touch.ts', () => {
     expect(right).not.toHaveBeenCalled()
   })
 
-  it('should unbind', async () => {
+  it('should unmount', async () => {
     const start = jest.fn()
-    const wrapper = mountFunction({ start })
+    const wrapper = mount({
+      directives: { Touch },
+      props: {
+        value: Object,
+        bound: Boolean,
+      },
+      template: '<div v-if="bound" class="test" v-touch="value" /><div v-else class="test" />',
+    }, {
+      props: {
+        value: { start },
+        bound: true,
+      },
+    })
+    const el = wrapper.element
 
-    Touch.unbind(wrapper.element, { value: {} }, { context: wrapper.vm })
+    await nextTick()
+    await wrapper.setProps({ bound: false })
 
-    touch(wrapper).start(0, 0)
+    touch(el).start(0, 0)
     expect(start.mock.calls).toHaveLength(0)
   })
 })

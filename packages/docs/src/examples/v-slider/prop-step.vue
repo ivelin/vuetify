@@ -1,19 +1,24 @@
 <template>
-  <v-card>
-    <v-card-text>
-      <v-slider
-        v-model="value"
-        step="10"
-      ></v-slider>
-    </v-card-text>
-  </v-card>
+  <v-slider
+    v-model="value"
+    :min="0"
+    :max="1"
+    :step="0.2"
+    thumb-label
+  ></v-slider>
 </template>
+
+<script setup>
+  import { ref } from 'vue'
+
+  const value = ref(0)
+</script>
 
 <script>
   export default {
     data () {
       return {
-        value: 10,
+        value: 0,
       }
     },
   }

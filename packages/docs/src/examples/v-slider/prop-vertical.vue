@@ -1,15 +1,16 @@
-
 <template>
-  <v-container>
-    <v-row>
-      <v-slider
-        v-model="value"
-        vertical
-        label="Regular"
-      ></v-slider>
-    </v-row>
-  </v-container>
+  <v-slider
+    v-model="value"
+    direction="vertical"
+    label="Regular"
+  ></v-slider>
 </template>
+
+<script setup>
+  import { ref } from 'vue'
+
+  const value = ref(10)
+</script>
 
 <script>
   export default {

@@ -1,31 +1,54 @@
 <template>
-  <v-toolbar
-    v-bind="$attrs"
-    v-on="$listeners"
+  <usage-example
+    v-model="model"
+    :code="code"
+    :options="options"
+    :name="name"
   >
-    <v-app-bar-nav-icon></v-app-bar-nav-icon>
-  </v-toolbar>
+    <div>
+      <v-toolbar v-bind="props">
+        <v-spacer></v-spacer>
+        <v-btn icon="mdi-menu"></v-btn>
+        <v-btn icon="mdi-dots-vertical"></v-btn>
+      </v-toolbar>
+    </div>
+
+    <template v-slot:configuration>
+      <v-select v-model="density" label="Density" :items="['default', 'comfortable', 'compact']"></v-select>
+
+      <v-text-field v-model="title" label="Title" clearable></v-text-field>
+
+      <v-checkbox v-model="collapse" label="Collapsed"></v-checkbox>
+    </template>
+  </usage-example>
 </template>
 
-<script>
-  export default {
-    name: 'Usage',
+<script setup>
+  // Utilities
+  import { computed, ref } from 'vue'
+  import { propsToString } from '@/util/helpers'
 
-    inheritAttrs: false,
+  const name = 'v-toolbar'
+  const model = ref('default')
+  const collapse = ref()
+  const density = ref('default')
+  const title = ref('Application')
+  const options = ['elevated', 'bordered']
+  const props = computed(() => {
+    return {
+      border: model.value === 'bordered' ? true : undefined,
+      collapse: collapse.value || undefined,
+      density: density.value === 'default' ? undefined : density.value,
+      elevation: model.value === 'elevated' ? 8 : undefined,
+      title: title.value || undefined,
+    }
+  })
 
-    data: () => ({
-      defaults: {
-        color: null,
-        dense: false,
-        flat: false,
-        prominent: false,
-      },
-      options: {
-        selects: {
-          color: ['red', 'orange', 'yellow', 'green', 'blue', 'purple'],
-        },
-      },
-      tabs: ['dense', 'flat', 'prominent'],
-    }),
-  }
+  const slots = computed(() => {
+    return ``
+  })
+
+  const code = computed(() => {
+    return `<${name}${propsToString(props.value)}>${slots.value}</${name}>`
+  })
 </script>

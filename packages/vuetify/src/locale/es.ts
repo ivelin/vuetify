@@ -1,5 +1,6 @@
 export default {
   badge: 'Placa',
+  open: 'Open',
   close: 'Cerrar',
   dataIterator: {
     noResultsText: 'Ningún elemento coincide con la búsqueda',
@@ -12,8 +13,8 @@ export default {
       sortAscending: 'Orden ascendente.',
       sortNone: 'Sin ordenar.',
       activateNone: 'Pulse para quitar orden.',
-      activateDescending: 'Pulse para ordenar descendente.',
-      activateAscending: 'Pulse para ordenar ascendente.',
+      activateDescending: 'Pulse para ordenar de forma descendente.',
+      activateAscending: 'Pulse para ordenar de forma ascendente.',
     },
     sortBy: 'Ordenado por',
   },
@@ -22,16 +23,25 @@ export default {
     itemsPerPageAll: 'Todos',
     nextPage: 'Página siguiente',
     prevPage: 'Página anterior',
-    firstPage: 'Primer página',
+    firstPage: 'Primera página',
     lastPage: 'Última página',
     pageText: '{0}-{1} de {2}',
   },
+  dateRangeInput: {
+    divider: 'to',
+  },
   datePicker: {
-    itemsSelected: '{0} seleccionados',
-    nextMonthAriaLabel: 'Próximo mes',
-    nextYearAriaLabel: 'Próximo año',
-    prevMonthAriaLabel: 'Mes anterior',
-    prevYearAriaLabel: 'Año anterior',
+    ok: 'OK',
+    cancel: 'Cancel',
+    range: {
+      title: 'Select dates',
+      header: 'Enter dates',
+    },
+    title: 'Select date',
+    header: 'Enter date',
+    input: {
+      placeholder: 'Enter date',
+    },
   },
   noDataText: 'No hay datos disponibles',
   carousel: {
@@ -44,6 +54,12 @@ export default {
   calendar: {
     moreEvents: '{0} más',
   },
+  input: {
+    clear: 'Clear {0}',
+    prependAction: '{0} prepended action',
+    appendAction: '{0} appended action',
+    otp: 'Please enter OTP character {0}',
+  },
   fileInput: {
     counter: '{0} archivos',
     counterSize: '{0} archivos ({1} en total)',
@@ -54,16 +70,27 @@ export default {
   },
   pagination: {
     ariaLabel: {
-      wrapper: 'Navegación de paginación',
+      root: 'Navegación de paginación',
       next: 'Página siguiente',
       previous: 'Página anterior',
       page: 'Ir a la página {0}',
       currentPage: 'Página actual, página {0}',
+      first: 'First page',
+      last: 'Last page',
     },
+  },
+  stepper: {
+    next: 'Next',
+    prev: 'Previous',
   },
   rating: {
     ariaLabel: {
-      icon: 'Puntuación {0} de {1}',
+      item: 'Puntuación {0} de {1}',
     },
+  },
+  loading: 'Loading...',
+  infiniteScroll: {
+    loadMore: 'Load more',
+    empty: 'No more',
   },
 }

@@ -9,7 +9,7 @@
           <v-text-field
             v-model="first"
             label="First Name"
-            filled
+            variant="filled"
           ></v-text-field>
         </v-col>
 
@@ -20,13 +20,20 @@
           <v-text-field
             v-model="last"
             label="Last Name"
-            filled
+            variant="filled"
           ></v-text-field>
         </v-col>
       </v-row>
     </v-container>
   </v-form>
 </template>
+
+<script setup>
+  import { ref } from 'vue'
+
+  const first = ref('John')
+  const last = ref('Doe')
+</script>
 
 <script>
   export default {

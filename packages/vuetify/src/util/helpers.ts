@@ -1,73 +1,20 @@
-import Vue from 'vue'
-import { VNode, VNodeDirective } from 'vue/types'
-import { VuetifyIcon } from 'vuetify/types/services/icons'
-import { DataTableCompareFunction, SelectItemKey, ItemGroup } from 'vuetify/types'
+// Utilities
+import { camelize, capitalize, computed, Fragment, reactive, toRefs, watchEffect } from 'vue'
+import { IN_BROWSER } from '@/util/globals'
 
-export function createSimpleFunctional (
-  c: string,
-  el = 'div',
-  name?: string
-) {
-  return Vue.extend({
-    name: name || c.replace(/__/g, '-'),
-
-    functional: true,
-
-    render (h, { data, children }): VNode {
-      data.staticClass = (`${c} ${data.staticClass || ''}`).trim()
-
-      return h(el, data, children)
-    },
-  })
-}
-
-export type BindingConfig = Pick<VNodeDirective, 'arg' | 'modifiers' | 'value'>
-export function directiveConfig (binding: BindingConfig, defaults = {}): VNodeDirective {
-  return {
-    ...defaults,
-    ...binding.modifiers,
-    value: binding.arg,
-    ...(binding.value || {}),
-  }
-}
-
-export function addOnceEventListener (
-  el: EventTarget,
-  eventName: string,
-  cb: (event: Event) => void,
-  options: boolean | AddEventListenerOptions = false
-): void {
-  const once = (event: Event) => {
-    cb(event)
-    el.removeEventListener(eventName, once, options)
-  }
-
-  el.addEventListener(eventName, once, options)
-}
-
-let passiveSupported = false
-try {
-  if (typeof window !== 'undefined') {
-    const testListenerOpts = Object.defineProperty({}, 'passive', {
-      get: () => {
-        passiveSupported = true
-      },
-    })
-
-    window.addEventListener('testListener', testListenerOpts, testListenerOpts)
-    window.removeEventListener('testListener', testListenerOpts, testListenerOpts)
-  }
-} catch (e) { console.warn(e) } /* eslint-disable-line no-console */
-export { passiveSupported }
-
-export function addPassiveEventListener (
-  el: EventTarget,
-  event: string,
-  cb: EventHandlerNonNull | (() => void),
-  options: {}
-): void {
-  el.addEventListener(event, cb, passiveSupported ? options : false)
-}
+// Types
+import type {
+  ComponentInternalInstance,
+  ComponentPublicInstance,
+  ComputedGetter,
+  InjectionKey,
+  PropType,
+  Ref,
+  Slots,
+  ToRefs,
+  VNode,
+  VNodeChild,
+} from 'vue'
 
 export function getNestedValue (obj: any, path: (string | number)[], fallback?: any): any {
   const last = path.length - 1
@@ -113,7 +60,7 @@ export function deepEqual (a: any, b: any): boolean {
   return props.every(p => deepEqual(a[p], b[p]))
 }
 
-export function getObjectValueByPath (obj: any, path: string, fallback?: any): any {
+export function getObjectValueByPath (obj: any, path?: string | null, fallback?: any): any {
   // credit: http://stackoverflow.com/questions/6491463/accessing-nested-javascript-objects-with-string-key#comment55278413_6491621
   if (obj == null || !path || typeof path !== 'string') return fallback
   if (obj[path] !== undefined) return obj[path]
@@ -122,14 +69,28 @@ export function getObjectValueByPath (obj: any, path: string, fallback?: any): a
   return getNestedValue(obj, path.split('.'), fallback)
 }
 
+export type SelectItemKey =
+  | boolean | null | undefined // Ignored
+  | string // Lookup by key, can use dot notation for nested objects
+  | (string | number)[] // Nested lookup by key, each array item is a key in the next level
+  | ((item: Record<string, any>, fallback?: any) => any)
+
 export function getPropertyFromItem (
-  item: object,
+  item: any,
   property: SelectItemKey,
   fallback?: any
 ): any {
-  if (property == null) return item === undefined ? fallback : item
+  if (property === true) return item === undefined ? fallback : item
 
-  if (item !== Object(item)) return fallback === undefined ? item : fallback
+  if (property == null || typeof property === 'boolean') return fallback
+
+  if (item !== Object(item)) {
+    if (typeof property !== 'function') return fallback
+
+    const value = property(item, fallback)
+
+    return typeof value === 'undefined' ? fallback : value
+  }
 
   if (typeof property === 'string') return getObjectValueByPath(item, property, fallback)
 
@@ -142,8 +103,8 @@ export function getPropertyFromItem (
   return typeof value === 'undefined' ? fallback : value
 }
 
-export function createRange (length: number): number[] {
-  return Array.from({ length }, (v, k) => k)
+export function createRange (length: number, start = 0): number[] {
+  return Array.from({ length }, (v, k) => start + k)
 }
 
 export function getZIndex (el?: Element | null): number {
@@ -155,45 +116,28 @@ export function getZIndex (el?: Element | null): number {
   return index
 }
 
-const tagsToReplace = {
-  '&': '&amp;',
-  '<': '&lt;',
-  '>': '&gt;',
-} as any
-
-export function escapeHTML (str: string): string {
-  return str.replace(/[&<>]/g, tag => tagsToReplace[tag] || tag)
-}
-
-export function filterObjectOnKeys<T, K extends keyof T> (obj: T, keys: K[]): { [N in K]: T[N] } {
-  const filtered = {} as { [N in K]: T[N] }
-
-  for (let i = 0; i < keys.length; i++) {
-    const key = keys[i]
-    if (typeof obj[key] !== 'undefined') {
-      filtered[key] = obj[key]
-    }
-  }
-
-  return filtered
-}
-
+export function convertToUnit (str: number, unit?: string): string
+export function convertToUnit (str: string | number | null | undefined, unit?: string): string | undefined
 export function convertToUnit (str: string | number | null | undefined, unit = 'px'): string | undefined {
   if (str == null || str === '') {
     return undefined
   } else if (isNaN(+str!)) {
     return String(str)
+  } else if (!isFinite(+str!)) {
+    return undefined
   } else {
     return `${Number(str)}${unit}`
   }
 }
 
-export function kebabCase (str: string): string {
-  return (str || '').replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase()
+export function isObject (obj: any): obj is object {
+  return obj !== null && typeof obj === 'object' && !Array.isArray(obj)
 }
 
-export function isObject (obj: any): obj is object {
-  return obj !== null && typeof obj === 'object'
+export function refElement<T extends object | undefined> (obj: T): Exclude<T, ComponentPublicInstance> | HTMLElement {
+  return obj && '$el' in obj
+    ? obj.$el as HTMLElement
+    : obj as HTMLElement
 }
 
 // KeyboardEvent.keyCode aliases
@@ -217,49 +161,172 @@ export const keyCodes = Object.freeze({
   shift: 16,
 })
 
-/**
- * This remaps internal names like '$cancel' or '$vuetify.icons.cancel'
- * to the current name or component for that icon.
- */
-export function remapInternalIcon (vm: Vue, iconName: string): VuetifyIcon {
-  // Look for custom component in the configuration
-  const component = vm.$vuetify.icons.component
+export const keyValues: Record<string, string> = Object.freeze({
+  enter: 'Enter',
+  tab: 'Tab',
+  delete: 'Delete',
+  esc: 'Escape',
+  space: 'Space',
+  up: 'ArrowUp',
+  down: 'ArrowDown',
+  left: 'ArrowLeft',
+  right: 'ArrowRight',
+  end: 'End',
+  home: 'Home',
+  del: 'Delete',
+  backspace: 'Backspace',
+  insert: 'Insert',
+  pageup: 'PageUp',
+  pagedown: 'PageDown',
+  shift: 'Shift',
+})
 
-  // Look for overrides
-  if (iconName.startsWith('$')) {
-    // Get the target icon name
-    const iconPath = `$vuetify.icons.values.${iconName.split('$').pop()!.split('.').pop()}`
-
-    // Now look up icon indirection name,
-    // e.g. '$vuetify.icons.values.cancel'
-    const override = getObjectValueByPath(vm, iconPath, iconName)
-
-    if (typeof override === 'string') iconName = override
-    else return override
-  }
-
-  if (component == null) {
-    return iconName
-  }
-
-  return {
-    component,
-    props: {
-      icon: iconName,
-    },
-  }
-}
-
-export function keys<O> (o: O) {
+export function keys<O extends {}> (o: O) {
   return Object.keys(o) as (keyof O)[]
 }
 
+export function has<T extends string> (obj: object, key: T[]): obj is Record<T, unknown> {
+  return key.every(k => obj.hasOwnProperty(k))
+}
+
+type MaybePick<
+  T extends object,
+  U extends Extract<keyof T, string>
+> = Record<string, unknown> extends T ? Partial<Pick<T, U>> : Pick<T, U>
+
+// Array of keys
+export function pick<
+  T extends object,
+  U extends Extract<keyof T, string>,
+  E extends Extract<keyof T, string>
+> (obj: T, paths: U[], exclude?: E[]): [yes: MaybePick<T, Exclude<U, E>>, no: Omit<T, Exclude<U, E>>]
+// Array of keys or RegExp to test keys against
+export function pick<
+  T extends object,
+  U extends Extract<keyof T, string>,
+  E extends Extract<keyof T, string>
+> (obj: T, paths: (U | RegExp)[], exclude?: E[]): [yes: Partial<T>, no: Partial<T>]
+export function pick<
+  T extends object,
+  U extends Extract<keyof T, string>,
+  E extends Extract<keyof T, string>
+> (obj: T, paths: (U | RegExp)[], exclude?: E[]): [yes: Partial<T>, no: Partial<T>] {
+  const found = Object.create(null)
+  const rest = Object.create(null)
+
+  for (const key in obj) {
+    if (
+      paths.some(path => path instanceof RegExp
+        ? path.test(key)
+        : path === key
+      ) && !exclude?.some(path => path === key)
+    ) {
+      found[key] = obj[key]
+    } else {
+      rest[key] = obj[key]
+    }
+  }
+
+  return [found, rest]
+}
+
+export function omit<
+  T extends object,
+  U extends Extract<keyof T, string>
+> (obj: T, exclude: U[]): Omit<T, U> {
+  const clone = { ...obj }
+
+  exclude.forEach(prop => delete clone[prop])
+
+  return clone
+}
+
+export function only<
+  T extends object,
+  U extends Extract<keyof T, string>
+> (obj: T, include: U[]): Pick<T, U> {
+  const clone = {} as T
+
+  include.forEach(prop => clone[prop] = obj[prop])
+
+  return clone
+}
+
+const onRE = /^on[^a-z]/
+export const isOn = (key: string) => onRE.test(key)
+
+const bubblingEvents = [
+  'onAfterscriptexecute',
+  'onAnimationcancel',
+  'onAnimationend',
+  'onAnimationiteration',
+  'onAnimationstart',
+  'onAuxclick',
+  'onBeforeinput',
+  'onBeforescriptexecute',
+  'onChange',
+  'onClick',
+  'onCompositionend',
+  'onCompositionstart',
+  'onCompositionupdate',
+  'onContextmenu',
+  'onCopy',
+  'onCut',
+  'onDblclick',
+  'onFocusin',
+  'onFocusout',
+  'onFullscreenchange',
+  'onFullscreenerror',
+  'onGesturechange',
+  'onGestureend',
+  'onGesturestart',
+  'onGotpointercapture',
+  'onInput',
+  'onKeydown',
+  'onKeypress',
+  'onKeyup',
+  'onLostpointercapture',
+  'onMousedown',
+  'onMousemove',
+  'onMouseout',
+  'onMouseover',
+  'onMouseup',
+  'onMousewheel',
+  'onPaste',
+  'onPointercancel',
+  'onPointerdown',
+  'onPointerenter',
+  'onPointerleave',
+  'onPointermove',
+  'onPointerout',
+  'onPointerover',
+  'onPointerup',
+  'onReset',
+  'onSelect',
+  'onSubmit',
+  'onTouchcancel',
+  'onTouchend',
+  'onTouchmove',
+  'onTouchstart',
+  'onTransitioncancel',
+  'onTransitionend',
+  'onTransitionrun',
+  'onTransitionstart',
+  'onWheel',
+]
+
 /**
- * Camelize a hyphen-delimited string.
+ * Filter attributes that should be applied to
+ * the root element of an input component. Remaining
+ * attributes should be passed to the <input> element inside.
  */
-const camelizeRE = /-(\w)/g
-export const camelize = (str: string): string => {
-  return str.replace(camelizeRE, (_, c) => c ? c.toUpperCase() : '')
+export function filterInputAttrs (attrs: Record<string, unknown>) {
+  const [events, props] = pick(attrs, [onRE])
+  const inputEvents = omit(events, bubblingEvents)
+  const [rootAttrs, inputAttrs] = pick(props, ['class', 'style', 'id', /^data-/])
+  Object.assign(rootAttrs, events)
+  Object.assign(inputAttrs, inputEvents)
+  return [rootAttrs, inputAttrs]
 }
 
 /**
@@ -268,92 +335,21 @@ export const camelize = (str: string): string => {
 export function arrayDiff (a: any[], b: any[]): any[] {
   const diff: any[] = []
   for (let i = 0; i < b.length; i++) {
-    if (a.indexOf(b[i]) < 0) diff.push(b[i])
+    if (!a.includes(b[i])) diff.push(b[i])
   }
   return diff
 }
 
-/**
- * Makes the first character of a string uppercase
- */
-export function upperFirst (str: string): string {
-  return str.charAt(0).toUpperCase() + str.slice(1)
-}
-
-export function groupItems<T extends any = any> (
-  items: T[],
-  groupBy: string[],
-  groupDesc: boolean[]
-): ItemGroup<T>[] {
-  const key = groupBy[0]
-  const groups: ItemGroup<T>[] = []
-  let current
-  for (let i = 0; i < items.length; i++) {
-    const item = items[i]
-    const val = getObjectValueByPath(item, key, null)
-    if (current !== val) {
-      current = val
-      groups.push({
-        name: val ?? '',
-        items: [],
-      })
-    }
-    groups[groups.length - 1].items.push(item)
-  }
-  return groups
-}
-
-export function wrapInArray<T> (v: T | T[] | null | undefined): T[] { return v != null ? Array.isArray(v) ? v : [v] : [] }
-
-export function sortItems<T extends any = any> (
-  items: T[],
-  sortBy: string[],
-  sortDesc: boolean[],
-  locale: string,
-  customSorters?: Record<string, DataTableCompareFunction<T>>
-): T[] {
-  if (sortBy === null || !sortBy.length) return items
-  const stringCollator = new Intl.Collator(locale, { sensitivity: 'accent', usage: 'sort' })
-
-  return items.sort((a, b) => {
-    for (let i = 0; i < sortBy.length; i++) {
-      const sortKey = sortBy[i]
-
-      let sortA = getObjectValueByPath(a, sortKey)
-      let sortB = getObjectValueByPath(b, sortKey)
-
-      if (sortDesc[i]) {
-        [sortA, sortB] = [sortB, sortA]
-      }
-
-      if (customSorters && customSorters[sortKey]) {
-        const customResult = customSorters[sortKey](sortA, sortB)
-
-        if (!customResult) continue
-
-        return customResult
-      }
-
-      // Check if both cannot be evaluated
-      if (sortA === null && sortB === null) {
-        continue
-      }
-
-      // Dates should be compared numerically
-      if (sortA instanceof Date && sortB instanceof Date) {
-        return sortA.getTime() - sortB.getTime()
-      }
-
-      [sortA, sortB] = [sortA, sortB].map(s => (s || '').toString().toLocaleLowerCase())
-
-      if (sortA !== sortB) {
-        if (!isNaN(sortA) && !isNaN(sortB)) return Number(sortA) - Number(sortB)
-        return stringCollator.compare(sortA, sortB)
-      }
-    }
-
-    return 0
-  })
+type IfAny<T, Y, N> = 0 extends (1 & T) ? Y : N;
+export function wrapInArray<T> (
+  v: T | null | undefined
+): T extends readonly any[]
+    ? IfAny<T, T[], T>
+    : NonNullable<T>[] {
+  return v == null
+    ? []
+    : Array.isArray(v)
+      ? v as any : [v]
 }
 
 export function defaultFilter (value: any, search: string | null, item: any) {
@@ -369,20 +365,6 @@ export function searchItems<T extends any = any> (items: T[], search: string): T
   if (search.trim() === '') return items
 
   return items.filter((item: any) => Object.keys(item).some(key => defaultFilter(getObjectValueByPath(item, key), search, item)))
-}
-
-/**
- * Returns:
- *  - 'normal' for old style slots - `<template slot="default">`
- *  - 'scoped' for old style scoped slots (`<template slot="default" slot-scope="data">`) or bound v-slot (`#default="data"`)
- *  - 'v-slot' for unbound v-slot (`#default`) - only if the third param is true, otherwise counts as scoped
- */
-export function getSlotType<T extends boolean = false> (vm: Vue, name: string, split?: T): (T extends true ? 'v-slot' : never) | 'normal' | 'scoped' | void {
-  if (vm.$slots[name] && vm.$scopedSlots[name] && (vm.$scopedSlots[name] as any).name) {
-    return split ? 'v-slot' as any : 'scoped'
-  }
-  if (vm.$slots[name]) return 'normal'
-  if (vm.$scopedSlots[name]) return 'scoped'
 }
 
 export function debounce (fn: Function, delay: number) {
@@ -404,28 +386,39 @@ export function throttle<T extends (...args: any[]) => any> (fn: T, limit: numbe
   }
 }
 
-export function getPrefixedScopedSlots (prefix: string, scopedSlots: any) {
-  return Object.keys(scopedSlots).filter(k => k.startsWith(prefix)).reduce((obj: any, k: string) => {
-    obj[k.replace(prefix, '')] = scopedSlots[k]
-    return obj
-  }, {})
+type Writable<T> = {
+  -readonly [P in keyof T]: T[P]
 }
 
-export function getSlot (vm: Vue, name = 'default', data?: object | (() => object), optional = false) {
-  if (vm.$scopedSlots[name]) {
-    return vm.$scopedSlots[name]!(data instanceof Function ? data() : data)
-  } else if (vm.$slots[name] && (!data || optional)) {
-    return vm.$slots[name]
-  }
-  return undefined
+/**
+ * Filters slots to only those starting with `prefix`, removing the prefix
+ */
+export function getPrefixedSlots (prefix: string, slots: Slots): Slots {
+  return Object.keys(slots)
+    .filter(k => k.startsWith(prefix))
+    .reduce<Writable<Slots>>((obj, k) => {
+      obj[k.replace(prefix, '')] = slots[k]
+      return obj
+    }, {})
 }
 
 export function clamp (value: number, min = 0, max = 1) {
   return Math.max(min, Math.min(max, value))
 }
 
+export function getDecimals (value: number) {
+  const trimmedStr = value.toString().trim()
+  return trimmedStr.includes('.')
+    ? (trimmedStr.length - trimmedStr.indexOf('.') - 1)
+    : 0
+}
+
 export function padEnd (str: string, length: number, char = '0') {
   return str + char.repeat(Math.max(0, length - str.length))
+}
+
+export function padStart (str: string, length: number, char = '0') {
+  return char.repeat(Math.max(0, length - str.length)) + str
 }
 
 export function chunk (str: string, size = 1) {
@@ -438,13 +431,12 @@ export function chunk (str: string, size = 1) {
   return chunked
 }
 
-export function humanReadableFileSize (bytes: number, binary = false): string {
-  const base = binary ? 1024 : 1000
+export function humanReadableFileSize (bytes: number, base: 1000 | 1024 = 1000): string {
   if (bytes < base) {
     return `${bytes} B`
   }
 
-  const prefix = binary ? ['Ki', 'Mi', 'Gi'] : ['k', 'M', 'G']
+  const prefix = base === 1024 ? ['Ki', 'Mi', 'Gi'] : ['k', 'M', 'G']
   let unit = -1
   while (Math.abs(bytes) >= base && unit < prefix.length - 1) {
     bytes /= base
@@ -463,9 +455,16 @@ export function camelizeObjectKeys (obj: Record<string, any> | null | undefined)
 }
 
 export function mergeDeep (
-  source: Dictionary<any> = {},
-  target: Dictionary<any> = {}
+  source: Record<string, any> = {},
+  target: Record<string, any> = {},
+  arrayFn?: (a: unknown[], b: unknown[]) => unknown[],
 ) {
+  const out: Record<string, any> = {}
+
+  for (const key in source) {
+    out[key] = source[key]
+  }
+
   for (const key in target) {
     const sourceProperty = source[key]
     const targetProperty = target[key]
@@ -476,17 +475,230 @@ export function mergeDeep (
       isObject(sourceProperty) &&
       isObject(targetProperty)
     ) {
-      source[key] = mergeDeep(sourceProperty, targetProperty)
+      out[key] = mergeDeep(sourceProperty, targetProperty, arrayFn)
 
       continue
     }
 
-    source[key] = targetProperty
+    if (Array.isArray(sourceProperty) && Array.isArray(targetProperty) && arrayFn) {
+      out[key] = arrayFn(sourceProperty, targetProperty)
+
+      continue
+    }
+
+    out[key] = targetProperty
   }
 
-  return source
+  return out
 }
 
 export function fillArray<T> (length: number, obj: T) {
   return Array(length).fill(obj)
+}
+
+export function flattenFragments (nodes: VNode[]): VNode[] {
+  return nodes.map(node => {
+    if (node.type === Fragment) {
+      return flattenFragments(node.children as VNode[])
+    } else {
+      return node
+    }
+  }).flat()
+}
+
+export const randomHexColor = () => {
+  const n = (Math.random() * 0xfffff * 1000000).toString(16)
+  return '#' + n.slice(0, 6)
+}
+
+export function toKebabCase (str = '') {
+  if (toKebabCase.cache.has(str)) return toKebabCase.cache.get(str)!
+  const kebab = str
+    .replace(/[^a-z]/gi, '-')
+    .replace(/\B([A-Z])/g, '-$1')
+    .toLowerCase()
+  toKebabCase.cache.set(str, kebab)
+  return kebab
+}
+toKebabCase.cache = new Map<string, string>()
+
+export type MaybeRef<T> = T | Ref<T>
+
+export function findChildren (vnode?: VNodeChild): ComponentInternalInstance[] {
+  if (!vnode || typeof vnode !== 'object') {
+    return []
+  }
+
+  if (Array.isArray(vnode)) {
+    return vnode
+      .map(child => findChildren(child))
+      .filter(v => v)
+      .flat(1)
+  } else if (Array.isArray(vnode.children)) {
+    return vnode.children
+      .map(child => findChildren(child))
+      .filter(v => v)
+      .flat(1)
+  } else if (vnode.component) {
+    return [vnode.component, ...findChildren(vnode.component?.subTree)]
+      .filter(v => v)
+      .flat(1)
+  }
+
+  return []
+}
+
+export function findChildrenWithProvide (
+  key: InjectionKey<any> | symbol,
+  vnode?: VNodeChild,
+): ComponentInternalInstance[] {
+  if (!vnode || typeof vnode !== 'object') return []
+
+  if (Array.isArray(vnode)) {
+    return vnode.map(child => findChildrenWithProvide(key, child)).flat(1)
+  } else if (Array.isArray(vnode.children)) {
+    return vnode.children.map(child => findChildrenWithProvide(key, child)).flat(1)
+  } else if (vnode.component) {
+    if (Object.getOwnPropertySymbols(vnode.component.provides).includes(key as symbol)) {
+      return [vnode.component]
+    } else if (vnode.component.subTree) {
+      return findChildrenWithProvide(key, vnode.component.subTree).flat(1)
+    }
+  }
+
+  return []
+}
+
+export class CircularBuffer<T = never> {
+  readonly #arr: Array<T> = []
+  #pointer = 0
+
+  constructor (public readonly size: number) {}
+
+  push (val: T) {
+    this.#arr[this.#pointer] = val
+    this.#pointer = (this.#pointer + 1) % this.size
+  }
+
+  values (): T[] {
+    return this.#arr.slice(this.#pointer).concat(this.#arr.slice(0, this.#pointer))
+  }
+}
+
+export type UnionToIntersection<U> =
+  (U extends any ? (k: U) => void : never) extends ((k: infer I) => void) ? I : never
+
+export function getEventCoordinates (e: MouseEvent | TouchEvent) {
+  if ('touches' in e) {
+    return { clientX: e.touches[0].clientX, clientY: e.touches[0].clientY }
+  }
+
+  return { clientX: e.clientX, clientY: e.clientY }
+}
+
+// Only allow a single return type
+type NotAUnion<T> = [T] extends [infer U] ? _NotAUnion<U, U> : never
+type _NotAUnion<T, U> = U extends any ? [T] extends [U] ? unknown : never : never
+
+/**
+ * Convert a computed ref to a record of refs.
+ * The getter function must always return an object with the same keys.
+ */
+export function destructComputed<T extends object> (getter: ComputedGetter<T & NotAUnion<T>>): ToRefs<T>
+export function destructComputed<T extends object> (getter: ComputedGetter<T>) {
+  const refs = reactive({}) as T
+  const base = computed(getter)
+  watchEffect(() => {
+    for (const key in base.value) {
+      refs[key] = base.value[key]
+    }
+  }, { flush: 'sync' })
+  return toRefs(refs)
+}
+
+/** Array.includes but value can be any type */
+export function includes (arr: readonly any[], val: any) {
+  return arr.includes(val)
+}
+
+export function eventName (propName: string) {
+  return propName[2].toLowerCase() + propName.slice(3)
+}
+
+export type EventProp<T extends any[] = any[], F = (...args: T) => any> = F | F[]
+export const EventProp = <T extends any[] = any[]>() => [Function, Array] as PropType<EventProp<T>>
+
+export function hasEvent (props: Record<string, any>, name: string) {
+  name = 'on' + capitalize(name)
+  return !!(props[name] || props[`${name}Once`] || props[`${name}Capture`] || props[`${name}OnceCapture`] || props[`${name}CaptureOnce`])
+}
+
+export function callEvent<T extends any[]> (handler: EventProp<T> | undefined, ...args: T) {
+  if (Array.isArray(handler)) {
+    for (const h of handler) {
+      h(...args)
+    }
+  } else if (typeof handler === 'function') {
+    handler(...args)
+  }
+}
+
+export function focusableChildren (el: Element, filterByTabIndex = true) {
+  const targets = ['button', '[href]', 'input:not([type="hidden"])', 'select', 'textarea', '[tabindex]']
+    .map(s => `${s}${filterByTabIndex ? ':not([tabindex="-1"])' : ''}:not([disabled])`)
+    .join(', ')
+  return [...el.querySelectorAll(targets)] as HTMLElement[]
+}
+
+export function getNextElement (elements: HTMLElement[], location?: 'next' | 'prev', condition?: (el: HTMLElement) => boolean) {
+  let _el
+  let idx = elements.indexOf(document.activeElement as HTMLElement)
+  const inc = location === 'next' ? 1 : -1
+  do {
+    idx += inc
+    _el = elements[idx]
+  } while ((!_el || _el.offsetParent == null || !(condition?.(_el) ?? true)) && idx < elements.length && idx >= 0)
+  return _el
+}
+
+export function focusChild (el: Element, location?: 'next' | 'prev' | 'first' | 'last' | number) {
+  const focusable = focusableChildren(el)
+
+  if (!location) {
+    if (el === document.activeElement || !el.contains(document.activeElement)) {
+      focusable[0]?.focus()
+    }
+  } else if (location === 'first') {
+    focusable[0]?.focus()
+  } else if (location === 'last') {
+    focusable.at(-1)?.focus()
+  } else if (typeof location === 'number') {
+    focusable[location]?.focus()
+  } else {
+    const _el = getNextElement(focusable, location)
+    if (_el) _el.focus()
+    else focusChild(el, location === 'next' ? 'first' : 'last')
+  }
+}
+
+export function isEmpty (val: any): boolean {
+  return val === null || val === undefined || (typeof val === 'string' && val.trim() === '')
+}
+
+export function noop () {}
+
+/** Returns null if the selector is not supported or we can't check */
+export function matchesSelector (el: Element | undefined, selector: string): boolean | null {
+  const supportsSelector = IN_BROWSER &&
+    typeof CSS !== 'undefined' &&
+    typeof CSS.supports !== 'undefined' &&
+    CSS.supports(`selector(${selector})`)
+
+  if (!supportsSelector) return null
+
+  try {
+    return !!el && el.matches(selector)
+  } catch (err) {
+    return null
+  }
 }

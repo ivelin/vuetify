@@ -1,5 +1,6 @@
 export default {
   badge: 'باج',
+  open: 'Open',
   close: 'داخستن',
   dataIterator: {
     noResultsText: 'هیچ تۆمارێکی هاوتا نەدۆزرایەوە',
@@ -26,12 +27,21 @@ export default {
     lastPage: 'پەڕەی کۆتایی',
     pageText: '{0}-{1} لە {2}',
   },
+  dateRangeInput: {
+    divider: 'to',
+  },
   datePicker: {
-    itemsSelected: '{0} دەسنیشانکراوە',
-    nextMonthAriaLabel: 'مانگی داهاتوو',
-    nextYearAriaLabel: 'ساڵی داهاتوو',
-    prevMonthAriaLabel: 'مانگی پێشوو',
-    prevYearAriaLabel: 'ساڵی پێشوو',
+    ok: 'OK',
+    cancel: 'Cancel',
+    range: {
+      title: 'Select dates',
+      header: 'Enter dates',
+    },
+    title: 'Select date',
+    header: 'Enter date',
+    input: {
+      placeholder: 'Enter date',
+    },
   },
   noDataText: 'هیچ داتایەک بەردەست نیە',
   carousel: {
@@ -44,6 +54,12 @@ export default {
   calendar: {
     moreEvents: '{0} زیاتر',
   },
+  input: {
+    clear: 'Clear {0}',
+    prependAction: '{0} prepended action',
+    appendAction: '{0} appended action',
+    otp: 'Please enter OTP character {0}',
+  },
   fileInput: {
     counter: '{0} فایل',
     counterSize: '{0} فایل ({1} لە کۆی گشتی)',
@@ -54,16 +70,27 @@ export default {
   },
   pagination: {
     ariaLabel: {
-      wrapper: 'ڕێنیشاندەری پەڕەگۆڕکێ',
+      root: 'ڕێنیشاندەری پەڕەگۆڕکێ',
       next: 'پەڕەی دواتر',
       previous: 'پەڕەی پێشوو',
       page: 'بڕۆ بۆ پەڕەی {0}',
       currentPage: 'پەڕەی ئێستا، پەڕە{0}',
+      first: 'First page',
+      last: 'Last page',
     },
+  },
+  stepper: {
+    next: 'Next',
+    prev: 'Previous',
   },
   rating: {
     ariaLabel: {
-      icon: 'Rating {0} of {1}',
+      item: 'Rating {0} of {1}',
     },
+  },
+  loading: 'Loading...',
+  infiniteScroll: {
+    loadMore: 'Load more',
+    empty: 'No more',
   },
 }

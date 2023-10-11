@@ -1,5 +1,6 @@
 ---
 meta:
+  nav: Slide groups
   title: Slide group component
   description: The slide group component is similar to item groups in that you can make selectable content out of elements but does so in a single line fashion.
   keywords: slide groups, slideable groups, vuetify slide group component, vue slide group component
@@ -7,13 +8,17 @@ related:
   - /components/icons/
   - /components/carousels/
   - /components/tabs/
+features:
+  github: /components/VSlideGroup/
+  label: 'C: VSlideGroup'
+  report: true
 ---
 
 # Slide groups
 
 The `v-slide-group` component is used to display pseudo paginated information. It uses [v-item-group](/components/item-groups) at its core and provides a baseline for components such as [v-tabs](/components/tabs) and [v-chip-group](/components/chip-groups).
 
-<entry-ad />
+<page-features />
 
 ## Usage
 
@@ -21,18 +26,16 @@ Similar to the [v-window](/components/windows) component, `v-slide-group` lets i
 
 <example file="v-slide-group/usage" />
 
+<entry />
+
 ## API
 
-- [v-slide-group](/api/v-slide-group)
-- [v-slide-item](/api/v-slide-item)
+| Component | Description |
+| - | - |
+| [v-slide-group](/api/v-slide-group/) | Primary Component |
+| [v-slide-group-item](/api/v-slide-group-item/) | Sub-component used for modifying the `v-slide-group` state |
 
-<inline-api page="components/slide-groups" />
-
-<!-- ## Sub-components
-
-### v-slide-item
-
-v-slide-item description -->
+<api-inline hide-links />
 
 ## Examples
 
@@ -75,5 +78,3 @@ You can select multiple items by setting the **multiple** prop.
 Customize the slide group to creatively display information on sheets. Using the selection, we can display auxillary information easily for the user.
 
 <example file="v-slide-group/misc-pseudo-carousel" />
-
-<backmatter />

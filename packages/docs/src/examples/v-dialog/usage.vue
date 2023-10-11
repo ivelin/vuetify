@@ -1,52 +1,84 @@
 <template>
-  <div class="text-center">
-    <v-dialog
-      v-model="dialog"
-      width="500"
-    >
-      <template v-slot:activator="{ on, attrs }">
-        <v-btn
-          color="red lighten-2"
-          dark
-          v-bind="attrs"
-          v-on="on"
-        >
-          Click Me
-        </v-btn>
-      </template>
-
-      <v-card>
-        <v-card-title class="text-h5 grey lighten-2">
-          Privacy Policy
-        </v-card-title>
-
-        <v-card-text>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-        </v-card-text>
-
-        <v-divider></v-divider>
-
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn
-            color="primary"
-            text
-            @click="dialog = false"
-          >
-            I accept
+  <usage-example
+    v-model="model"
+    :code="code"
+    :name="name"
+    :options="options"
+  >
+    <div class="text-center">
+      <v-dialog
+        v-model="dialog"
+        v-bind="props"
+      >
+        <template v-slot:activator="{ props: activatorProps }">
+          <v-btn v-bind="activatorProps">
+            Open Dialog
           </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-  </div>
+        </template>
+
+        <template v-slot:default="{ isActive }">
+          <v-card title="Dialog">
+            <v-card-text>
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+            </v-card-text>
+
+            <v-card-actions>
+              <v-spacer></v-spacer>
+
+              <v-btn
+                text="Close Dialog"
+                @click="isActive.value = false"
+              ></v-btn>
+            </v-card-actions>
+          </v-card>
+        </template>
+      </v-dialog>
+    </div>
+  </usage-example>
 </template>
 
-<script>
-  export default {
-    data () {
-      return {
-        dialog: false,
-      }
-    },
-  }
+<script setup>
+  // Utilities
+  import { computed, ref } from 'vue'
+  import { propsToString } from '@/util/helpers'
+
+  const name = 'v-dialog'
+  const model = ref('default')
+  const dialog = ref(false)
+  const options = []
+
+  const props = computed(() => {
+    return {
+      width: '500',
+    }
+  })
+
+  const slots = computed(() => {
+    return `
+  <template v-slot:activator="{ props }">
+    <v-btn v-bind="props" text="Open Dialog"> </v-btn>
+  </template>
+
+  <template v-slot:default="{ isActive }">
+    <v-card title="Dialog">
+      <v-card-text>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+      </v-card-text>
+
+      <v-card-actions>
+        <v-spacer></v-spacer>
+
+        <v-btn
+          text="Close Dialog"
+          @click="isActive.value = false"
+        ></v-btn>
+      </v-card-actions>
+    </v-card>
+  </template>
+`
+  })
+
+  const code = computed(() => {
+    return `<v-dialog${propsToString(props.value)}>${slots.value}</v-dialog>`
+  })
 </script>

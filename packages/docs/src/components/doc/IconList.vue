@@ -1,135 +1,100 @@
 <template>
-  <div class="mt-2 mb-6">
-    <v-menu
-      v-model="menu"
-      :open-on-click="filteredIcons.length > 0"
-      offset-y
-    >
-      <template #activator="{ on, attrs }">
-        <v-text-field
-          v-model="search"
-          hide-details
-          :loading="!icons"
-          clearable
-          outlined
-          placeholder="Search for icons (e.g. account, close)"
-          v-bind="attrs"
-          @click:clear="reset"
-          v-on="on"
-        >
-          <template #prepend-inner>
-            <v-icon
-              v-if="copied"
-              color="primary"
-            >
-              mdi-{{ search }}
-            </v-icon>
-            <code class="mx-1 py-1">mdi-</code>
-          </template>
+  <v-autocomplete
+    v-model="selection"
+    v-model:search="search"
+    :items="filteredIcons"
+    :item-props="itemProps"
+    :placeholder="t('search.icons')"
+    item-title="name"
+    item-value="name"
+    no-filter
+    variant="outlined"
+  >
+    <template #prepend-inner>
+      <v-expand-x-transition>
+        <v-icon v-if="selection" start>
+          {{ getIcon(selection) }}
+        </v-icon>
+      </v-expand-x-transition>
 
-          <template #append>
-            <span
-              v-if="copied"
-              class="text--primary pt-1"
-            >
-              Copied
-            </span>
-          </template>
-        </v-text-field>
-      </template>
+      <code class="me-n1">mdi-</code>
+    </template>
 
-      <v-list v-show="filteredIcons.length > 0">
-        <v-virtual-scroll
-          :items="filteredIcons"
-          :item-height="56"
-          :height="Math.min(filteredIcons.length * 56, 336)"
-        >
-          <template #default="{ item }">
-            <v-list-item
-              :key="item"
-              @click.stop="copy(item)"
-            >
-              <v-list-item-icon>
-                <v-icon
-                  color="primary"
-                  class="mr-2"
-                  v-text="item"
-                />
-              </v-list-item-icon>
+    <template #item="{ props, item }">
+      <v-list-item v-bind="props">
+        <template #append>
+          <v-btn
+            icon="mdi-content-copy"
+            size="small"
+            variant="plain"
+            @click.stop="copy(item.raw.name)"
+          />
+        </template>
+      </v-list-item>
+    </template>
 
-              <v-list-item-content>
-                <v-list-item-title v-text="item.substring(4)" />
-              </v-list-item-content>
-
-              <v-btn
-                icon
-                @click.stop="copy(item)"
-              >
-                <v-icon size="21">
-                  $mdiContentCopy
-                </v-icon>
-              </v-btn>
-            </v-list-item>
-          </template>
-        </v-virtual-scroll>
-      </v-list>
-    </v-menu>
-  </div>
+    <template #append-inner>
+      <v-expand-x-transition>
+        <span v-if="copied" class="text-primary pt-1">
+          {{ t('copied') }}
+        </span>
+      </v-expand-x-transition>
+    </template>
+  </v-autocomplete>
 </template>
 
-<script>
-  import * as allIcons from '@mdi/js'
-  import kebabCase from 'lodash/kebabCase'
+<script setup>
+  // Composables
+  import { useI18n } from 'vue-i18n'
 
-  export default {
-    name: 'IconList',
+  // Utilities
+  import { camelize, computed, shallowRef, watch } from 'vue'
+  import { distance } from '@/util/helpers'
 
-    data: () => ({
-      copied: false,
-      icons: [],
-      menu: false,
-      search: '',
-    }),
+  // Data
+  import icons from '@mdi/svg/meta.json'
+  import * as paths from '@mdi/js'
 
-    computed: {
-      filteredIcons () {
-        if (!this.icons.length || !this.search) return []
-        if (!this.search) return this.icons
+  const { t } = useI18n()
 
-        return this.icons.filter(item => {
-          return item.toLowerCase().match(this.search.toLowerCase())
-        })
-      },
-    },
+  const copied = shallowRef(false)
+  const selection = shallowRef()
+  const search = shallowRef('')
+  const filteredIcons = computed(() => {
+    if (!search.value) return icons
 
-    watch: {
-      search () {
-        if (this.filteredIcons.length > 0 && !this.menu) {
-          this.menu = true
-        } else if (!this.filteredIcons.length) {
-          this.menu = false
-        }
-      },
-    },
-
-    mounted () {
-      this.icons = Object.keys(allIcons).map(icon => {
-        return kebabCase(icon)
+    return icons
+      .map(icon => ({
+        name: icon.name,
+        distance: Math.max(
+          distance(search.value, icon.name),
+          ...icon.aliases.map(v => distance(search.value, v))
+        ),
+      }))
+      .filter(v => v.distance > 0.7)
+      .sort((a, b) => {
+        return b.distance - a.distance
       })
-    },
+  })
 
-    methods: {
-      copy (item) {
-        navigator.clipboard.writeText(item).then(() => {
-          this.search = item.substring(4)
-          this.copied = true
-        })
-      },
-      reset () {
-        this.menu = false
-        this.copied = false
-        this.search = ''
-      },
-    },
+  watch(selection, value => {
+    value && copy(value)
+  })
+
+  function getIcon (name) {
+    return 'svg:' + paths[camelize('mdi-' + name)]
+  }
+  function itemProps (item) {
+    return {
+      prependIcon: getIcon(item.name),
+    }
+  }
+  function copy (item) {
+    navigator.clipboard.writeText('mdi-' + item).then(() => {
+      copied.value = true
+      setTimeout(() => {
+        copied.value = false
+      }, 2000)
+    })
   }
 </script>

@@ -1,43 +1,21 @@
-/* eslint-disable max-len */
-
-import {
-  VueConstructor,
-  ComponentOptions,
-  FunctionalComponentOptions,
-  VNodeData,
-} from 'vue'
-import { CombinedVueInstance, Vue } from 'vue/types/vue'
-import {
-  RecordPropsDefinition,
-  ThisTypedComponentOptionsWithArrayProps,
-  ThisTypedComponentOptionsWithRecordProps,
-} from 'vue/types/options'
-import { MetaInfo } from 'vue-meta/types'
-import { TouchStoredHandlers } from './directives/touch'
+// Types
+import type { Events, VNode } from 'vue'
+import type { TouchStoredHandlers } from './directives/touch'
 
 declare global {
-  interface Window {
-    Vue: VueConstructor
-  }
-
   interface HTMLCollection {
     [Symbol.iterator] (): IterableIterator<Element>
   }
 
   interface Element {
-    getElementsByClassName(classNames: string): NodeListOf<HTMLElement>
-  }
-
-  interface HTMLElement {
-    _clickOutside?: {
-      lastMousedownWasOutside: boolean
+    _clickOutside?: Record<number, {
       onClick: EventListener
       onMousedown: EventListener
-    }
-    _onResize?: {
-      callback: () => void
-      options?: boolean | AddEventListenerOptions
-    }
+    } | undefined> & { lastMousedownWasOutside: boolean }
+    _onResize?: Record<number, {
+      handler: () => void
+      options: AddEventListenerOptions
+    } | undefined>
     _ripple?: {
       enabled?: boolean
       centered?: boolean
@@ -48,18 +26,18 @@ declare global {
       showTimer?: number
       showTimerCommit?: (() => void) | null
     }
-    _observe?: {
+    _observe?: Record<number, {
       init: boolean
       observer: IntersectionObserver
-    }
-    _mutate?: {
+    } | undefined>
+    _mutate?: Record<number, {
       observer: MutationObserver
-    }
-    _onScroll?: {
+    } | undefined>
+    _onScroll?: Record<number, {
       handler: EventListenerOrEventListenerObject
-      options: boolean | AddEventListenerOptions
+      options: AddEventListenerOptions
       target?: EventTarget
-    }
+    } | undefined>
     _touchHandlers?: {
       [_uid: number]: TouchStoredHandlers
     }
@@ -70,6 +48,8 @@ declare global {
       width: string
       height: string
     }
+
+    getElementsByClassName(classNames: string): NodeListOf<HTMLElement>
   }
 
   interface WheelEvent {
@@ -77,88 +57,93 @@ declare global {
   }
 
   interface UIEvent {
-    initUIEvent (typeArg: string, canBubbleArg: boolean, cancelableArg: boolean, viewArg: Window, detailArg: number): void
+    initUIEvent (
+      typeArg: string,
+      canBubbleArg: boolean,
+      cancelableArg: boolean,
+      viewArg: Window,
+      detailArg: number,
+    ): void
+  }
+
+  interface MouseEvent {
+    sourceCapabilities?: { firesTouchEvents: boolean }
   }
 
   function parseInt(s: string | number, radix?: number): number
   function parseFloat(string: string | number): number
 
-  export type Dictionary<T> = Record<string, T>
-
   export const __VUETIFY_VERSION__: string
   export const __REQUIRED_VUE__: string
-}
+  export const __VUE_OPTIONS_API__: boolean | undefined
 
-declare module 'vue/types/vnode' {
-  export interface VNodeData {
-    model?: {
-      callback: (v: any) => void
-      expression: string
-      value: any
+  namespace JSX {
+    interface Element extends VNode {}
+    interface IntrinsicAttributes {
+      [name: string]: any
     }
   }
 }
 
-declare module 'vue/types/options' {
-  interface ComponentOptions<V extends Vue> {
-    head?: MetaInfo | (() => MetaInfo)
+declare module '@vue/runtime-core' {
+  export interface ComponentCustomProperties {
+    _: ComponentInternalInstance
+  }
+
+  export interface ComponentInternalInstance {
+    provides: Record<string, unknown>
+    setupState: any
+  }
+
+  export interface FunctionalComponent {
+    aliasName?: string
+  }
+
+  // eslint-disable-next-line max-len
+  export interface ComponentOptionsBase<Props, RawBindings, D, C extends ComputedOptions, M extends MethodOptions, Mixin extends ComponentOptionsMixin, Extends extends ComponentOptionsMixin, E extends EmitsOptions, EE extends string = string, Defaults = {}> {
+    aliasName?: string
+  }
+
+  export interface App {
+    $nuxt?: { hook: (name: string, fn: () => void) => void }
   }
 }
 
-declare module 'vue/types/vue' {
-  export type OptionsVue<Instance extends Vue, Data, Methods, Computed, Props, Options = {}> = VueConstructor<
-    CombinedVueInstance<Instance, Data, Methods, Computed, Props> & Vue,
-    Options
-  >
+declare module '@vue/runtime-dom' {
+  type UnionToIntersection<U> =
+    (U extends any ? (k: U) => void : never) extends ((k: infer I) => void) ? I : never
 
-  export interface Vue {
-    readonly _uid: number
-    readonly _isDestroyed: boolean
+  type Combine<T extends string> = T | {
+    [K in T]: {
+      [L in Exclude<T, K>]: `${K}${Exclude<T, K>}` | `${K}${L}${Exclude<T, K | L>}`
+    }[Exclude<T, K>]
+  }[T]
 
-    /** bindObjectProps */
-    _b (
-      data: VNodeData,
-      tag: string,
-      value: Dictionary<any> | Dictionary<any>[],
-      asProp?: boolean,
-      isSync?: boolean
-    ): VNodeData
+  type Modifiers = Combine<'Passive' | 'Capture' | 'Once'>
 
-    /** bindObjectListeners */
-     _g (data: VNodeData, value: {}): VNodeData
+  type ModifiedEvents = UnionToIntersection<{
+    [K in keyof Events]: { [L in `${K}${Modifiers}`]: Events[K] }
+  }[keyof Events]>
+
+  type EventHandlers<E> = {
+    [K in keyof E]?: E[K] extends Function ? E[K] : (payload: E[K]) => void
   }
 
-  export interface RawComponentOptions<
-    V extends Vue = Vue,
-    Data = {} | undefined,
-    Methods = {} | undefined,
-    Computed = {} | undefined,
-    Props = {} | undefined
-  > {
-    name?: string
-    data: Data
-    methods: Methods
-    computed: {
-      [C in keyof Computed]: (this: V) => Computed[C]
-    }
-    props: Props
+  export interface HTMLAttributes extends EventHandlers<ModifiedEvents> {}
+
+  type CustomProperties = {
+    [k in `--${string}`]: any
   }
 
-  interface VueConstructor<
-    V extends Vue = Vue,
-    Options = Record<string, any>
-  > {
-    version: string
-    /* eslint-disable-next-line camelcase */
-    $_vuetify_subcomponents?: Record<string, VueConstructor>
-    /* eslint-disable-next-line camelcase */
-    $_vuetify_installed?: true
-    options: Options
+  export interface CSSProperties extends CustomProperties {}
+}
 
-    extend<Data, Methods, Computed, Options, PropNames extends string = never> (options?: ThisTypedComponentOptionsWithArrayProps<V, Data, Methods, Computed, PropNames> & Options): OptionsVue<V, Data, Methods, Computed, Record<PropNames, any>, Options>
-    extend<Data, Methods, Computed, Props, Options> (options?: ThisTypedComponentOptionsWithRecordProps<V, Data, Methods, Computed, Props> & Options): OptionsVue<V, Data, Methods, Computed, Props, Options>
-    extend<Options, PropNames extends string = never> (definition: FunctionalComponentOptions<Record<PropNames, any>, PropNames[]> & Options): OptionsVue<V, {}, {}, {}, Record<PropNames, any>, Options>
-    extend<Props, Options> (definition: FunctionalComponentOptions<Props, RecordPropsDefinition<Props>> & Options): OptionsVue<V, {}, {}, {}, Props, Options>
-    extend<V extends Vue = Vue> (options?: ComponentOptions<V> & Options): OptionsVue<V, {}, {}, {}, {}, Options>
+declare module 'expect' {
+  interface Matchers<R> {
+    /** console.warn */
+    toHaveBeenTipped(): R
+
+    /** console.error */
+    toHaveBeenWarned(): R
   }
 }

@@ -1,56 +1,26 @@
 <template>
   <section
-    :id="id"
-    class="mt-12"
+    id="ready-for-more"
+    class="mt-16"
   >
-    <app-heading
-      :content="text"
-      level="2"
-    />
-
-    <i18n
-      class="mb-3"
-      path="ready-text"
-      tag="div"
-    >
-      <template #team>
-        <i18n
-          :href="url"
-          path="team"
-          tag="app-link"
-        />
-      </template>
-    </i18n>
+    <ready-for-more />
 
     <related-pages />
 
-    <app-divider class="mt-7 mb-5" />
+    <app-divider />
 
-    <up-next class="mb-4" />
+    <up-next />
 
-    <exit-ad class="mb-8" />
+    <promoted />
 
     <contribute />
   </section>
 </template>
 
-<script>
-  // Utilities
-  import { sync } from 'vuex-pathify'
-
-  export default {
-    name: 'Backmatter',
-
-    data: () => ({ id: 'ready-for-more' }),
-
-    computed: {
-      toc: sync('pages/toc'),
-      text () {
-        return this.$t('ready', { url: this.url })
-      },
-      url () {
-        return '/about/meet-the-team/'
-      },
-    },
-  }
+<script setup>
+  // Components
+  import Contribute from '@/components/doc/Contribute.vue'
+  import ReadyForMore from '@/components/doc/ReadyForMore.vue'
+  import RelatedPages from '@/components/doc/RelatedPages.vue'
+  import UpNext from '@/components/doc/UpNext.vue'
 </script>

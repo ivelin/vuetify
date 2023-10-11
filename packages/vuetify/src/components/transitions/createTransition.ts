@@ -1,80 +1,62 @@
-import { FunctionalComponentOptions, VNode, VNodeData } from 'vue'
-import mergeData from '../../util/mergeData'
+// Utilities
+import { h, Transition, TransitionGroup } from 'vue'
+import { genericComponent, propsFactory } from '@/util'
 
-function mergeTransitions (
-  dest: Function | Function[] = [],
-  ...transitions: (Function | Function[])[]
-) {
-  /* eslint-disable-next-line no-array-constructor */
-  return Array<Function>().concat(dest, ...transitions)
-}
+// Types
+import type { FunctionalComponent, PropType } from 'vue'
 
-export function createSimpleTransition (
+export const makeTransitionProps = propsFactory({
+  disabled: Boolean,
+  group: Boolean,
+  hideOnLeave: Boolean,
+  leaveAbsolute: Boolean,
+  mode: String,
+  origin: String,
+}, 'transition')
+
+export function createCssTransition (
   name: string,
-  origin = 'top center 0',
+  origin?: string,
   mode?: string
-): FunctionalComponentOptions {
-  return {
+) {
+  return genericComponent()({
     name,
 
-    functional: true,
+    props: makeTransitionProps({
+      mode,
+      origin,
+    }),
 
-    props: {
-      group: {
-        type: Boolean,
-        default: false,
-      },
-      hideOnLeave: {
-        type: Boolean,
-        default: false,
-      },
-      leaveAbsolute: {
-        type: Boolean,
-        default: false,
-      },
-      mode: {
-        type: String,
-        default: mode,
-      },
-      origin: {
-        type: String,
-        default: origin,
-      },
-    },
-
-    render (h, context): VNode {
-      const tag = `transition${context.props.group ? '-group' : ''}`
-      const data: VNodeData = {
-        props: {
-          name,
-          mode: context.props.mode,
-        },
-        on: {
-          beforeEnter (el: HTMLElement) {
-            el.style.transformOrigin = context.props.origin
-            el.style.webkitTransformOrigin = context.props.origin
-          },
-        },
-      }
-
-      if (context.props.leaveAbsolute) {
-        data.on!.leave = mergeTransitions(data.on!.leave, (el: HTMLElement) => {
-          const { offsetTop, offsetLeft, offsetWidth, offsetHeight } = el
-          el._transitionInitialStyles = {
-            position: el.style.position,
-            top: el.style.top,
-            left: el.style.left,
-            width: el.style.width,
-            height: el.style.height,
+    setup (props, { slots }) {
+      const functions = {
+        onBeforeEnter (el: HTMLElement) {
+          if (props.origin) {
+            el.style.transformOrigin = props.origin
           }
-          el.style.position = 'absolute'
-          el.style.top = offsetTop + 'px'
-          el.style.left = offsetLeft + 'px'
-          el.style.width = offsetWidth + 'px'
-          el.style.height = offsetHeight + 'px'
-        })
-        data.on!.afterLeave = mergeTransitions(data.on!.afterLeave, (el?: HTMLElement) => {
-          if (el && el._transitionInitialStyles) {
+        },
+        onLeave (el: HTMLElement) {
+          if (props.leaveAbsolute) {
+            const { offsetTop, offsetLeft, offsetWidth, offsetHeight } = el
+            el._transitionInitialStyles = {
+              position: el.style.position,
+              top: el.style.top,
+              left: el.style.left,
+              width: el.style.width,
+              height: el.style.height,
+            }
+            el.style.position = 'absolute'
+            el.style.top = `${offsetTop}px`
+            el.style.left = `${offsetLeft}px`
+            el.style.width = `${offsetWidth}px`
+            el.style.height = `${offsetHeight}px`
+          }
+
+          if (props.hideOnLeave) {
+            el.style.setProperty('display', 'none', 'important')
+          }
+        },
+        onAfterLeave (el: HTMLElement) {
+          if (props.leaveAbsolute && el?._transitionInitialStyles) {
             const { position, top, left, width, height } = el._transitionInitialStyles
             delete el._transitionInitialStyles
             el.style.position = position || ''
@@ -83,49 +65,48 @@ export function createSimpleTransition (
             el.style.width = width || ''
             el.style.height = height || ''
           }
-        })
-      }
-      if (context.props.hideOnLeave) {
-        data.on!.leave = mergeTransitions(data.on!.leave, (el: HTMLElement) => {
-          (el as any)._initialDisplay = el.style.display
-          el.style.display = 'none'
-        })
-        data.on!.afterLeave = mergeTransitions(data.on!.afterLeave, (el?: HTMLElement) => {
-          if (el) el.style.display = (el as any)._initialDisplay || ''
-        })
+        },
       }
 
-      return h(tag, mergeData(context.data, data), context.children)
+      return () => {
+        const tag = props.group ? TransitionGroup : Transition
+
+        return h(tag as FunctionalComponent, {
+          name: props.disabled ? '' : name,
+          css: !props.disabled,
+          ...(props.group ? undefined : { mode: props.mode }),
+          ...(props.disabled ? {} : functions),
+        }, slots.default)
+      }
     },
-  }
+  })
 }
 
 export function createJavascriptTransition (
   name: string,
   functions: Record<string, any>,
   mode = 'in-out'
-): FunctionalComponentOptions {
-  return {
+) {
+  return genericComponent()({
     name,
-
-    functional: true,
 
     props: {
       mode: {
-        type: String,
+        type: String as PropType<'in-out' | 'out-in' | 'default'>,
         default: mode,
       },
+      disabled: Boolean,
     },
 
-    render (h, context): VNode {
-      return h(
-        'transition',
-        mergeData(context.data, {
-          props: { name },
-          on: functions,
-        }),
-        context.children
-      )
+    setup (props, { slots }) {
+      return () => {
+        return h(Transition, {
+          name: props.disabled ? '' : name,
+          css: !props.disabled,
+          // mode: props.mode, // TODO: vuejs/vue-next#3104
+          ...(props.disabled ? {} : functions),
+        }, slots.default)
+      }
     },
-  }
+  })
 }

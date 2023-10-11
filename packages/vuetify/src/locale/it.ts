@@ -1,5 +1,6 @@
 export default {
   badge: 'Distintivo',
+  open: 'Open',
   close: 'Chiudi',
   dataIterator: {
     noResultsText: 'Nessun risultato trovato',
@@ -22,31 +23,46 @@ export default {
     itemsPerPageAll: 'Tutti',
     nextPage: 'Pagina seguente',
     prevPage: 'Pagina precedente',
-    firstPage: 'Pagina prima',
-    lastPage: 'Pagina ultima',
+    firstPage: 'Prima pagina',
+    lastPage: 'Ultima pagina',
     pageText: '{0}-{1} di {2}',
   },
+  dateRangeInput: {
+    divider: 'to',
+  },
   datePicker: {
-    itemsSelected: '{0} selezionati',
-    nextMonthAriaLabel: 'Il prossimo mese',
-    nextYearAriaLabel: `L'anno prossimo`,
-    prevMonthAriaLabel: 'Il mese scorso',
-    prevYearAriaLabel: `L'anno scorso`,
+    ok: 'OK',
+    cancel: 'Cancel',
+    range: {
+      title: 'Select dates',
+      header: 'Enter dates',
+    },
+    title: 'Select date',
+    header: 'Enter date',
+    input: {
+      placeholder: 'Enter date',
+    },
   },
   noDataText: 'Nessun elemento disponibile',
   carousel: {
     prev: 'Vista precedente',
     next: 'Prossima vista',
     ariaLabel: {
-      delimiter: 'Carousel slide {0} of {1}',
+      delimiter: 'Carousel slide {0} di {1}',
     },
   },
   calendar: {
     moreEvents: '{0} di più',
   },
+  input: {
+    clear: 'Clear {0}',
+    prependAction: '{0} prepended action',
+    appendAction: '{0} appended action',
+    otp: 'Please enter OTP character {0}',
+  },
   fileInput: {
-    counter: '{0} files',
-    counterSize: '{0} files ({1} in totale)',
+    counter: '{0} file',
+    counterSize: '{0} file ({1} in totale)',
   },
   timePicker: {
     am: 'AM',
@@ -54,16 +70,27 @@ export default {
   },
   pagination: {
     ariaLabel: {
-      wrapper: 'Navigazione impaginazione',
+      root: 'Navigazione impaginazione',
       next: 'Pagina seguente',
       previous: 'Pagina precedente',
       page: 'Vai alla pagina {0}',
       currentPage: 'Pagina corrente, pagina {0}',
+      first: 'First page',
+      last: 'Last page',
     },
+  },
+  stepper: {
+    next: 'Next',
+    prev: 'Previous',
   },
   rating: {
     ariaLabel: {
-      icon: 'Rating {0} of {1}',
+      item: 'Valutazione {0} di {1}',
     },
+  },
+  loading: 'Loading...',
+  infiniteScroll: {
+    loadMore: 'Load more',
+    empty: 'No more',
   },
 }

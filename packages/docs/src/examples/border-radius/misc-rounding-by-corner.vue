@@ -1,17 +1,19 @@
-
 <template>
-  <v-row>
-    <v-col
-      v-for="value in ['tl', 'tr', 'br', 'bl']"
-      :key="value"
-      cols="12"
-      md="3"
-    >
-      <div
-        :class="`rounded-${value}-xl`"
-        class="pa-4 text-center secondary text-no-wrap"
-        v-text="`.rounded-${value}-xl`"
-      ></div>
-    </v-col>
-  </v-row>
+  <div class="d-flex justify-space-around">
+    <div class="pa-4 bg-secondary rounded-ts-xl">
+      .rounded-ts-xl
+    </div>
+
+    <div class="pa-4 bg-secondary rounded-te-xl">
+      .rounded-te-xl
+    </div>
+
+    <div class="pa-4 bg-secondary rounded-be-xl">
+      .rounded-be-xl
+    </div>
+
+    <div class="pa-4 bg-secondary rounded-bs-xl">
+      .rounded-bs-xl
+    </div>
+  </div>
 </template>

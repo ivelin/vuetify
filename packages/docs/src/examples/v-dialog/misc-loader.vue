@@ -3,21 +3,19 @@
     <v-btn
       :disabled="dialog"
       :loading="dialog"
-      class="white--text"
-      color="purple darken-2"
+      color="purple-darken-2"
       @click="dialog = true"
     >
       Start loading
     </v-btn>
     <v-dialog
       v-model="dialog"
-      hide-overlay
+      :scrim="false"
       persistent
-      width="300"
+      width="auto"
     >
       <v-card
         color="primary"
-        dark
       >
         <v-card-text>
           Please stand by
@@ -31,6 +29,16 @@
     </v-dialog>
   </div>
 </template>
+
+<script setup>
+  import { ref, watch } from 'vue'
+
+  const dialog = ref(false)
+  watch(dialog, val => {
+    if (!val) return
+    setTimeout(() => (dialog.value = false), 4000)
+  })
+</script>
 
 <script>
   export default {

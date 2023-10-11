@@ -1,5 +1,6 @@
 export default {
   badge: 'Insígnia',
+  open: 'Open',
   close: 'Tancar',
   dataIterator: {
     noResultsText: 'Sense dades per mostrar',
@@ -8,12 +9,12 @@ export default {
   dataTable: {
     itemsPerPageText: 'Files per pàgina:',
     ariaLabel: {
-      sortDescending: 'Ordre descendent. Premi per treure la ordenació.',
-      sortAscending: 'Ordre ascendent. Premi per ordenar descendent.',
-      sortNone: 'Sense ordenar. Premi per ordenar ascendent.',
-      activateNone: 'Activate to remove sorting.',
-      activateDescending: 'Activate to sort descending.',
-      activateAscending: 'Activate to sort ascending.',
+      sortDescending: 'Ordre descendent.',
+      sortAscending: 'Ordre ascendent.',
+      sortNone: 'Sense ordenar.',
+      activateNone: 'Premi per treure la ordenació.',
+      activateDescending: 'Premi per ordenar descendent.',
+      activateAscending: 'Premi per ordenar ascendent.',
     },
     sortBy: 'Ordenat per',
   },
@@ -26,12 +27,21 @@ export default {
     lastPage: 'Última pàgina',
     pageText: '{0}-{1} de {2}',
   },
+  dateRangeInput: {
+    divider: 'to',
+  },
   datePicker: {
-    itemsSelected: '{0} seleccionats',
-    nextMonthAriaLabel: 'El mes que ve',
-    nextYearAriaLabel: `L'any que ve`,
-    prevMonthAriaLabel: 'Mes anterior',
-    prevYearAriaLabel: 'Any anterior',
+    ok: 'OK',
+    cancel: 'Cancel',
+    range: {
+      title: 'Select dates',
+      header: 'Enter dates',
+    },
+    title: 'Select date',
+    header: 'Enter date',
+    input: {
+      placeholder: 'Enter date',
+    },
   },
   noDataText: 'Sense dades',
   carousel: {
@@ -44,6 +54,12 @@ export default {
   calendar: {
     moreEvents: '{0} més',
   },
+  input: {
+    clear: 'Clear {0}',
+    prependAction: '{0} prepended action',
+    appendAction: '{0} appended action',
+    otp: 'Please enter OTP character {0}',
+  },
   fileInput: {
     counter: '{0} fitxers',
     counterSize: '{0} fitxers ({1} en total)',
@@ -54,16 +70,27 @@ export default {
   },
   pagination: {
     ariaLabel: {
-      wrapper: 'Navegació de la pàgina',
+      root: 'Navegació de la pàgina',
       next: 'Pàgina següent',
       previous: 'Pàgina anterior',
       page: 'Ves a la pàgina {0}',
       currentPage: 'Pàgina actual, pàgina {0}',
+      first: 'Primera pàgina',
+      last: 'Última pàgina',
     },
+  },
+  stepper: {
+    next: 'Next',
+    prev: 'Previous',
   },
   rating: {
     ariaLabel: {
-      icon: 'Rating {0} of {1}',
+      item: 'Puntuació {0} de {1}',
     },
+  },
+  loading: 'Loading...',
+  infiniteScroll: {
+    loadMore: 'Load more',
+    empty: 'No more',
   },
 }

@@ -1,5 +1,6 @@
 export default {
   badge: 'Σήμα',
+  open: 'Open',
   close: 'Close',
   dataIterator: {
     noResultsText: 'Δε βρέθηκαν αποτελέσματα',
@@ -26,12 +27,21 @@ export default {
     lastPage: 'Τελευταία σελίδα',
     pageText: '{0}-{1} από {2}',
   },
+  dateRangeInput: {
+    divider: 'to',
+  },
   datePicker: {
-    itemsSelected: '{0} επιλεγμένα',
-    nextMonthAriaLabel: 'Τον επόμενο μήνα',
-    nextYearAriaLabel: 'Του χρόνου',
-    prevMonthAriaLabel: 'Προηγούμενος μήνας',
-    prevYearAriaLabel: 'Προηγούμενο έτος',
+    ok: 'OK',
+    cancel: 'Cancel',
+    range: {
+      title: 'Select dates',
+      header: 'Enter dates',
+    },
+    title: 'Select date',
+    header: 'Enter date',
+    input: {
+      placeholder: 'Enter date',
+    },
   },
   noDataText: 'Χωρίς δεδομένα',
   carousel: {
@@ -44,6 +54,12 @@ export default {
   calendar: {
     moreEvents: '{0} ακόμη',
   },
+  input: {
+    clear: 'Clear {0}',
+    prependAction: '{0} prepended action',
+    appendAction: '{0} appended action',
+    otp: 'Please enter OTP character {0}',
+  },
   fileInput: {
     counter: '{0} files',
     counterSize: '{0} files ({1} in total)',
@@ -54,16 +70,27 @@ export default {
   },
   pagination: {
     ariaLabel: {
-      wrapper: 'Πλοήγηση με προορισμούς',
+      root: 'Πλοήγηση με προορισμούς',
       next: 'Επόμενη σελίδα',
       previous: 'Προηγούμενη σελίδα',
       page: 'Πήγαινε στην σελίδα {0}',
       currentPage: 'Τρέχουσα σελίδα, σελίδα {0}',
+      first: 'First page',
+      last: 'Last page',
     },
+  },
+  stepper: {
+    next: 'Next',
+    prev: 'Previous',
   },
   rating: {
     ariaLabel: {
-      icon: 'Rating {0} of {1}',
+      item: 'Rating {0} of {1}',
     },
+  },
+  loading: 'Loading...',
+  infiniteScroll: {
+    loadMore: 'Load more',
+    empty: 'No more',
   },
 }

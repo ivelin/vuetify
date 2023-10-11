@@ -1,3 +1,6 @@
+// @ts-nocheck
+/* eslint-disable */
+
 // Components
 import VTimePickerTitle from './VTimePickerTitle'
 import VTimePickerClock from './VTimePickerClock'
@@ -40,7 +43,7 @@ export default mixins(
     format: {
       type: String as PropType<'ampm' | '24hr'>,
       default: 'ampm',
-      validator (val) {
+      validator (val: any) {
         return ['ampm', '24hr'].includes(val)
       },
     },

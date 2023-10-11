@@ -1,42 +1,30 @@
 <template>
-  <v-row
-    align="center"
-    justify="center"
-  >
-    <v-icon>{{ icons.mdiAccount }}</v-icon>
-    <div class="mx-2"></div>
-    <v-icon>{{ icons.mdiPencil }}</v-icon>
-    <div class="mx-2"></div>
-    <v-icon>{{ icons.mdiShareVariant }}</v-icon>
-    <div class="mx-2"></div>
-    <v-btn
-      color="primary"
-      depressed
-    >
-      <v-icon left>
-        {{ icons.mdiDelete }}
-      </v-icon>
-      Delete
-    </v-btn>
-  </v-row>
+  <div class="d-flex justify-space-around">
+    <v-icon :icon="`mdiSvg:${mdiAccount}`"></v-icon>
+    <v-icon :icon="`mdiSvg:${mdiPencil}`"></v-icon>
+    <v-icon :icon="`mdiSvg:${mdiShareVariant}`"></v-icon>
+    <v-icon :icon="`mdiSvg:${mdiDelete}`"></v-icon>
+  </div>
 </template>
+
+<script setup>
+  import { mdiAccount, mdiDelete, mdiPencil, mdiShareVariant } from '@mdi/js'
+</script>
 
 <script>
   import {
     mdiAccount,
+    mdiDelete,
     mdiPencil,
     mdiShareVariant,
-    mdiDelete,
   } from '@mdi/js'
 
   export default {
     data: () => ({
-      icons: {
-        mdiAccount,
-        mdiPencil,
-        mdiShareVariant,
-        mdiDelete,
-      },
+      mdiAccount,
+      mdiPencil,
+      mdiShareVariant,
+      mdiDelete,
     }),
   }
 </script>

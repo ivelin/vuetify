@@ -1,64 +1,63 @@
 <template>
-  <v-card
-    height="300"
-    flat
+  <v-sheet
+    class="d-flex flex-column"
   >
     <v-snackbar
-      :timeout="-1"
-      :value="true"
-      absolute
-      left
-      shaped
-      top
+      :timeout="2000"
     >
+      <template v-slot:activator="{ props }">
+        <v-btn class="ma-2" v-bind="props">open</v-btn>
+      </template>
+
       Lorem ipsum dolor sit amet consectetur.
     </v-snackbar>
 
     <v-snackbar
-      :timeout="-1"
-      :value="true"
+      :timeout="2000"
       color="blue-grey"
-      absolute
-      right
       rounded="pill"
-      top
     >
-      Lorem ipsum dolor sit amet consectetur.
+      <template v-slot:activator="{ props }">
+        <v-btn rounded="pill" color="blue-grey" class="ma-2" v-bind="props">open</v-btn>
+      </template>
+
+      Snackbar with <strong>rounded="pill"</strong>.
     </v-snackbar>
 
     <v-snackbar
-      :timeout="-1"
-      :value="true"
-      absolute
-      centered
-      color="deep-purple accent-4"
+      :timeout="2000"
+      color="deep-purple-accent-4"
       elevation="24"
     >
-      Lorem ipsum dolor sit amet consectetur.
+      <template v-slot:activator="{ props }">
+        <v-btn color="deep-purple-accent-4" class="ma-2" v-bind="props">open</v-btn>
+      </template>
+
+      Snackbar with <strong>elevation="24"</strong>.
     </v-snackbar>
 
     <v-snackbar
-      :timeout="-1"
-      :value="true"
-      absolute
-      bottom
+      :timeout="2000"
       color="primary"
-      left
-      text
+      variant="tonal"
     >
-      Lorem ipsum dolor sit amet consectetur.
+      <template v-slot:activator="{ props }">
+        <v-btn color="primary" variant="tonal" class="ma-2" v-bind="props">open</v-btn>
+      </template>
+
+      Snackbar with <strong>tonal</strong> variant.
     </v-snackbar>
 
     <v-snackbar
-      :timeout="-1"
-      :value="true"
-      absolute
-      bottom
+      :timeout="2000"
       color="success"
-      outlined
-      right
+      variant="outlined"
     >
-      Lorem ipsum dolor sit amet consectetur.
+      <template v-slot:activator="{ props }">
+        <v-btn color="success" variant="outlined" class="ma-2" v-bind="props">open</v-btn>
+      </template>
+
+      Snackbar with <strong>outlined</strong> variant.
     </v-snackbar>
-  </v-card>
+  </v-sheet>
 </template>

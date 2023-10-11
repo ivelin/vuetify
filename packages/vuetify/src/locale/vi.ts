@@ -1,5 +1,6 @@
 export default {
   badge: 'Huy hiệu',
+  open: 'Open',
   close: 'Đóng',
   dataIterator: {
     noResultsText: 'Không tìm thấy kết quả nào',
@@ -26,12 +27,21 @@ export default {
     lastPage: 'Trang cuối',
     pageText: '{0}-{1} trên {2}',
   },
+  dateRangeInput: {
+    divider: 'to',
+  },
   datePicker: {
-    itemsSelected: '{0} được chọn',
-    nextMonthAriaLabel: 'Tháng sau',
-    nextYearAriaLabel: 'Năm sau',
-    prevMonthAriaLabel: 'Tháng trước',
-    prevYearAriaLabel: 'Năm trước',
+    ok: 'OK',
+    cancel: 'Cancel',
+    range: {
+      title: 'Select dates',
+      header: 'Enter dates',
+    },
+    title: 'Select date',
+    header: 'Enter date',
+    input: {
+      placeholder: 'Enter date',
+    },
   },
   noDataText: 'Không có dữ liệu',
   carousel: {
@@ -44,6 +54,12 @@ export default {
   calendar: {
     moreEvents: '{0} nữa',
   },
+  input: {
+    clear: 'Clear {0}',
+    prependAction: '{0} prepended action',
+    appendAction: '{0} appended action',
+    otp: 'Please enter OTP character {0}',
+  },
   fileInput: {
     counter: '{0} tệp',
     counterSize: '{0} tệp (tổng cộng {1})',
@@ -54,16 +70,27 @@ export default {
   },
   pagination: {
     ariaLabel: {
-      wrapper: 'Điều hướng phân trang',
+      root: 'Điều hướng phân trang',
       next: 'Trang tiếp theo',
       previous: 'Trang trước',
       page: 'Đến trang {0}',
       currentPage: 'Trang hiện tại, Trang {0}',
+      first: 'First page',
+      last: 'Last page',
     },
+  },
+  stepper: {
+    next: 'Next',
+    prev: 'Previous',
   },
   rating: {
     ariaLabel: {
-      icon: 'Đánh giá {0} trên {1}',
+      item: 'Đánh giá {0} trên {1}',
     },
+  },
+  loading: 'Loading...',
+  infiniteScroll: {
+    loadMore: 'Load more',
+    empty: 'No more',
   },
 }

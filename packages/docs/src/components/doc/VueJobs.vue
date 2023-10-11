@@ -1,134 +1,122 @@
 <template>
-  <div>
-    <app-text-field
-      v-model="filter"
-      :placeholder="$t('search-jobs')"
-      class="mt-8 mb-12"
-      clearable
-      icon="$mdiBriefcaseSearchOutline"
-    />
+  <v-row>
+    <v-col cols="12">
+      <div class="d-flex">
+        <app-text-field
+          v-model="search"
+          :append-inner-icon="view ? 'mdi-view-grid-outline' : 'mdi-view-list-outline'"
+          :placeholder="placeholder"
+          @click:append-inner.stop.prevent="view = !view"
+        />
+      </div>
+    </v-col>
 
-    <v-fade-transition
-      v-if="jobs.length"
-      group
-      hide-on-leave
-      leave-absolute
+    <v-col
+      v-for="job in items"
+      :key="job.id"
+      cols="12"
+      :md="view ? 6 : undefined"
     >
-      <div
-        v-for="job in jobs"
-        :key="job.id"
+      <v-card
+        :href="job.url"
+        border
+        class="transition-swing"
+        max-height="225"
+        rel="sponsored"
+        target="_blank"
+        variant="flat"
+        @click="onClick(job)"
       >
-        <v-card
-          :href="job.url"
-          class="mb-4 transition-swing"
-          outlined
-          rel="sponsored"
-          target="_blank"
+        <v-list-item
+          :title="job.title"
+          lines="two"
         >
-          <v-list-item>
-            <v-list-item-avatar>
-              <v-img
-                :src="job.avatar"
-                contain
+          <template #prepend>
+            <v-avatar
+              :color="!job.avatar ? 'primary' : undefined"
+              :class="!job.avatar && 'pt-1'"
+              :image="job.avatar"
+              icon="$vuetify"
+            />
+          </template>
+
+          <template v-if="job.locations.length > 0" #subtitle>
+            <div class="d-flex align-center">
+              <v-icon
+                class="me-1"
+                icon="mdi-map-marker-outline"
+                size="14"
               />
-            </v-list-item-avatar>
 
-            <v-list-item-content>
-              <v-list-item-title
-                class="font-weight-bold"
-                v-text="job.title"
-              />
+              {{ job.locations.join(', ') }}
+            </div>
+          </template>
 
-              <v-list-item-subtitle class="d-flex">
-                <v-icon
-                  class="mr-1"
-                  size="14"
-                >
-                  $mdiMapMarkerOutline
-                </v-icon>
-
-                {{ job.location }}
-              </v-list-item-subtitle>
-            </v-list-item-content>
-
+          <template #append>
             <v-btn
-              color="green"
-              class="white--text ml-auto"
-              depressed
-              small
+              color="success"
+              class="ms-6"
+              size="small"
+              style="pointer-events: none;"
+              variant="flat"
             >
-              {{ $t('apply') }}
+              {{ t('apply') }}
 
               <v-icon
-                right
-                small
-              >
-                $mdiOpenInNew
-              </v-icon>
+                icon="mdi-open-in-new"
+                end
+                size="small"
+              />
             </v-btn>
-          </v-list-item>
+          </template>
+        </v-list-item>
 
-          <v-card-text class="pb-2 pt-0">
-            <div
-              class="pb-2"
-              v-text="job.description"
-            />
+        <v-card-text class="text-medium-emphasis py-0">
+          <app-markdown :content="job.description" />
+        </v-card-text>
 
-            <div class="d-flex align-center text-lowercase">
-              <v-chip
-                v-if="job.isNew"
-                :class="$vuetify.rtl ? 'px-2 ml-1' : 'px-2 mr-1'"
-                color="#e83e8c"
-                dark
-                label
-                x-small
-              >
-                <span class="font-weight-bold">#{{ $t('new') }}</span>
-              </v-chip>
-
-              <v-chip
-                class="px-2"
-                color="primary"
-                label
-                x-small
-              >
-                <span class="font-weight-bold">#{{ job.type }}</span>
-              </v-chip>
-
-              <v-spacer />
-
-              <div class="text-right text-caption text--secondary">
-                via {{ job.via }}
-              </div>
-            </div>
-          </v-card-text>
-        </v-card>
-      </div>
-    </v-fade-transition>
-  </div>
+        <div class="text-end text-caption text-disabled mb-1 me-2">
+          via {{ job.via }}
+        </div>
+      </v-card>
+    </v-col>
+  </v-row>
 </template>
 
-<script>
+<script setup>
+  // Composables
+  import { useI18n } from 'vue-i18n'
+  import { useJobsStore } from '@/store/jobs'
+
   // Utilities
-  import { get } from 'vuex-pathify'
+  import { computed, ref } from 'vue'
+  import { useGtag } from 'vue-gtag-next'
 
-  export default {
-    name: 'VueJobs',
+  const { event } = useGtag()
+  const { jobs } = useJobsStore()
+  const { t } = useI18n()
+  const view = ref(true)
+  const search = ref('')
+  const items = computed(() => {
+    return jobs.filter(job => {
+      if (!search.value) return true
 
-    data: () => ({ filter: '' }),
+      const title = job.title.toLowerCase()
+      const description = job.description.toLowerCase()
+      const s = search.value.toLowerCase()
 
-    computed: {
-      all: get('jobs/all'),
-      jobs () {
-        if (!this.filter) return this.all
+      return (title.includes(s) || description.includes(s))
+    })
+  })
+  const placeholder = computed(() => {
+    return t('search-jobs')
+  })
 
-        return this.all.filter(job => {
-          const { company, description, location, title } = job
-          const string = `${company} ${description} ${location} ${title}`.toLowerCase()
-
-          return string.indexOf((this.filter || '').toLowerCase()) > -1
-        })
-      },
-    },
+  function onClick (job) {
+    event('click', {
+      event_category: 'vuetify-job',
+      event_label: job.title,
+      value: job.id,
+    })
   }
 </script>

@@ -1,5 +1,6 @@
 export default {
   badge: 'Abzeichen',
+  open: 'Open',
   close: 'Schließen',
   dataIterator: {
     noResultsText: 'Keine Elemente gefunden',
@@ -26,12 +27,21 @@ export default {
     lastPage: 'Letzte Seite',
     pageText: '{0}-{1} von {2}',
   },
+  dateRangeInput: {
+    divider: 'to',
+  },
   datePicker: {
-    itemsSelected: '{0} ausgewählt',
-    nextMonthAriaLabel: 'Nächsten Monat',
-    nextYearAriaLabel: 'Nächstes Jahr',
-    prevMonthAriaLabel: 'Vorheriger Monat',
-    prevYearAriaLabel: 'Vorheriges Jahr',
+    ok: 'OK',
+    cancel: 'Cancel',
+    range: {
+      title: 'Select dates',
+      header: 'Enter dates',
+    },
+    title: 'Select date',
+    header: 'Enter date',
+    input: {
+      placeholder: 'Enter date',
+    },
   },
   noDataText: 'Keine Daten vorhanden',
   carousel: {
@@ -44,6 +54,12 @@ export default {
   calendar: {
     moreEvents: '{0} mehr',
   },
+  input: {
+    clear: 'Clear {0}',
+    prependAction: '{0} prepended action',
+    appendAction: '{0} appended action',
+    otp: 'Please enter OTP character {0}',
+  },
   fileInput: {
     counter: '{0} Dateien',
     counterSize: '{0} Dateien ({1} gesamt)',
@@ -54,16 +70,27 @@ export default {
   },
   pagination: {
     ariaLabel: {
-      wrapper: 'Seitennavigation',
+      root: 'Seitennavigation',
       next: 'Nächste Seite',
       previous: 'Vorherige Seite',
       page: 'Gehe zu Seite {0}',
       currentPage: 'Aktuelle Seite, Seite {0}',
+      first: 'First page',
+      last: 'Last page',
     },
+  },
+  stepper: {
+    next: 'Next',
+    prev: 'Previous',
   },
   rating: {
     ariaLabel: {
-      icon: 'Rating {0} of {1}',
+      item: 'Rating {0} of {1}',
     },
+  },
+  loading: 'Loading...',
+  infiniteScroll: {
+    loadMore: 'Load more',
+    empty: 'No more',
   },
 }

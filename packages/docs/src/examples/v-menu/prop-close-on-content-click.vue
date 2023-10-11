@@ -5,15 +5,14 @@
       label="Close on content click"
     ></v-switch>
     <v-menu
-      top
+      location="top"
       :close-on-content-click="closeOnContentClick"
     >
-      <template v-slot:activator="{ on, attrs }">
+      <template v-slot:activator="{ props }">
         <v-btn
           color="primary"
           dark
-          v-bind="attrs"
-          v-on="on"
+          v-bind="props"
         >
           Dropdown
         </v-btn>
@@ -30,6 +29,19 @@
     </v-menu>
   </div>
 </template>
+
+<script setup>
+  import { ref } from 'vue'
+
+  const items = [
+    { title: 'Click Me' },
+    { title: 'Click Me' },
+    { title: 'Click Me' },
+    { title: 'Click Me 2' },
+  ]
+
+  const closeOnContentClick = ref(true)
+</script>
 
 <script>
   export default {

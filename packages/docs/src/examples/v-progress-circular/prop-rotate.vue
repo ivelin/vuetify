@@ -4,7 +4,7 @@
       :rotate="360"
       :size="100"
       :width="15"
-      :value="value"
+      :model-value="value"
       color="teal"
     >
       {{ value }}
@@ -14,7 +14,7 @@
       :rotate="-90"
       :size="100"
       :width="15"
-      :value="value"
+      :model-value="value"
       color="primary"
     >
       {{ value }}
@@ -24,7 +24,7 @@
       :rotate="90"
       :size="100"
       :width="15"
-      :value="value"
+      :model-value="value"
       color="red"
     >
       {{ value }}
@@ -34,13 +34,32 @@
       :rotate="180"
       :size="100"
       :width="15"
-      :value="value"
+      :model-value="value"
       color="pink"
     >
       {{ value }}
     </v-progress-circular>
   </div>
 </template>
+
+<script setup>
+  import { onBeforeUnmount, onMounted, ref } from 'vue'
+
+  const value = ref(0)
+
+  let interval = -1
+  onMounted(() => {
+    interval = setInterval(() => {
+      if (value.value === 100) {
+        return (value.value = 0)
+      }
+      value.value += 10
+    }, 1000)
+  })
+  onBeforeUnmount(() => {
+    clearInterval(interval)
+  })
+</script>
 
 <script>
   export default {
@@ -50,7 +69,7 @@
         value: 0,
       }
     },
-    beforeDestroy () {
+    beforeUnmount () {
       clearInterval(this.interval)
     },
     mounted () {

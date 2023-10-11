@@ -7,9 +7,9 @@
       <v-menu
         ref="menu"
         v-model="menu2"
+        v-model:return-value="time"
         :close-on-content-click="false"
         :nudge-right="40"
-        :return-value.sync="time"
         transition="scale-transition"
         offset-y
         max-width="290px"
@@ -29,7 +29,7 @@
           v-if="menu2"
           v-model="time"
           full-width
-          @click:minute="$refs.menu.save(time)"
+          @click:minute="menu.save(time)"
         ></v-time-picker>
       </v-menu>
     </v-col>
@@ -41,7 +41,7 @@
       <v-dialog
         ref="dialog"
         v-model="modal2"
-        :return-value.sync="time"
+        v-model:return-value="time"
         persistent
         width="290px"
       >
@@ -62,16 +62,16 @@
         >
           <v-spacer></v-spacer>
           <v-btn
-            text
+            variant="text"
             color="primary"
             @click="modal2 = false"
           >
             Cancel
           </v-btn>
           <v-btn
-            text
+            variant="text"
             color="primary"
-            @click="$refs.dialog.save(time)"
+            @click="dialog.save(time)"
           >
             OK
           </v-btn>
@@ -80,6 +80,17 @@
     </v-col>
   </v-row>
 </template>
+
+<script setup>
+  import { ref } from 'vue'
+
+  const menu = ref()
+  const dialog = ref()
+
+  const time = ref(null)
+  const menu2 = ref(false)
+  const modal2 = ref(false)
+</script>
 
 <script>
   export default {

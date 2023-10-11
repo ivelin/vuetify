@@ -2,15 +2,16 @@
 import './VRipple.sass'
 
 // Utilities
-import { consoleWarn } from '../../util/console'
-import { keyCodes } from '../../util/helpers'
+import { isObject, keyCodes } from '@/util'
 
 // Types
-import { VNode, VNodeDirective } from 'vue'
+import type {
+  DirectiveBinding,
+} from 'vue'
 
-const rippleStop = Symbol('rippleStop')
+const stopSymbol = Symbol('rippleStop')
 
-type VuetifyRippleEvent = (MouseEvent | TouchEvent | KeyboardEvent) & { [rippleStop]?: boolean }
+type VuetifyRippleEvent = (MouseEvent | TouchEvent | KeyboardEvent) & { [stopSymbol]?: boolean }
 
 const DELAY_RIPPLE = 80
 
@@ -19,14 +20,19 @@ function transform (el: HTMLElement, value: string) {
   el.style.webkitTransform = value
 }
 
-function opacity (el: HTMLElement, value: number) {
-  el.style.opacity = value.toString()
-}
-
-export interface RippleOptions {
+interface RippleOptions {
   class?: string
   center?: boolean
   circle?: boolean
+}
+
+export interface RippleDirectiveBinding extends Omit<DirectiveBinding, 'modifiers' | 'value'> {
+  value?: boolean | { class: string }
+  modifiers: {
+    center?: boolean
+    circle?: boolean
+    stop?: boolean
+  }
 }
 
 function isTouchEvent (e: VuetifyRippleEvent): e is TouchEvent {
@@ -55,7 +61,7 @@ const calculate = (
 
   let radius = 0
   let scale = 0.3
-  if (el._ripple && el._ripple.circle) {
+  if (el._ripple?.circle) {
     scale = 0.15
     radius = el.clientWidth / 2
     radius = value.center ? radius : radius + Math.sqrt((localX - radius) ** 2 + (localY - radius) ** 2) / 4
@@ -79,7 +85,7 @@ const ripples = {
     el: HTMLElement,
     value: RippleOptions = {}
   ) {
-    if (!el._ripple || !el._ripple.enabled) {
+    if (!el?._ripple?.enabled) {
       return
     }
 
@@ -111,19 +117,17 @@ const ripples = {
     animation.classList.add('v-ripple__animation--enter')
     animation.classList.add('v-ripple__animation--visible')
     transform(animation, `translate(${x}, ${y}) scale3d(${scale},${scale},${scale})`)
-    opacity(animation, 0)
     animation.dataset.activated = String(performance.now())
 
     setTimeout(() => {
       animation.classList.remove('v-ripple__animation--enter')
       animation.classList.add('v-ripple__animation--in')
       transform(animation, `translate(${centerX}, ${centerY}) scale3d(1,1,1)`)
-      opacity(animation, 0.25)
     }, 0)
   },
 
   hide (el: HTMLElement | null) {
-    if (!el || !el._ripple || !el._ripple.enabled) return
+    if (!el?._ripple?.enabled) return
 
     const ripples = el.getElementsByClassName('v-ripple__animation')
 
@@ -139,7 +143,6 @@ const ripples = {
     setTimeout(() => {
       animation.classList.remove('v-ripple__animation--in')
       animation.classList.add('v-ripple__animation--out')
-      opacity(animation, 0)
 
       setTimeout(() => {
         const ripples = el.getElementsByClassName('v-ripple__animation')
@@ -148,7 +151,7 @@ const ripples = {
           delete el.dataset.previousPosition
         }
 
-        animation.parentNode && el.removeChild(animation.parentNode)
+        if (animation.parentNode?.parentNode === el) el.removeChild(animation.parentNode)
       }, 300)
     }, delay)
   },
@@ -160,12 +163,12 @@ function isRippleEnabled (value: any): value is true {
 
 function rippleShow (e: VuetifyRippleEvent) {
   const value: RippleOptions = {}
-  const element = e.currentTarget as HTMLElement
+  const element = e.currentTarget as HTMLElement | undefined
 
-  if (!element || !element._ripple || element._ripple.touched || e[rippleStop]) return
+  if (!element?._ripple || element._ripple.touched || e[stopSymbol]) return
 
   // Don't allow the event to trigger ripples on any other elements
-  e[rippleStop] = true
+  e[stopSymbol] = true
 
   if (isTouchEvent(e)) {
     element._ripple.touched = true
@@ -177,6 +180,7 @@ function rippleShow (e: VuetifyRippleEvent) {
     // already been registered as touch
     if (element._ripple.isTouch) return
   }
+
   value.center = element._ripple.centered || isKeyboardEvent(e)
   if (element._ripple.class) {
     value.class = element._ripple.class
@@ -190,7 +194,7 @@ function rippleShow (e: VuetifyRippleEvent) {
       ripples.show(e, element, value)
     }
     element._ripple.showTimer = window.setTimeout(() => {
-      if (element && element._ripple && element._ripple.showTimerCommit) {
+      if (element?._ripple?.showTimerCommit) {
         element._ripple.showTimerCommit()
         element._ripple.showTimerCommit = null
       }
@@ -200,9 +204,13 @@ function rippleShow (e: VuetifyRippleEvent) {
   }
 }
 
+function rippleStop (e: VuetifyRippleEvent) {
+  e[stopSymbol] = true
+}
+
 function rippleHide (e: Event) {
   const element = e.currentTarget as HTMLElement | null
-  if (!element || !element._ripple) return
+  if (!element?._ripple) return
 
   window.clearTimeout(element._ripple.showTimer)
 
@@ -213,7 +221,7 @@ function rippleHide (e: Event) {
     element._ripple.showTimerCommit = null
 
     // re-queue ripple hiding
-    element._ripple.showTimer = setTimeout(() => {
+    element._ripple.showTimer = window.setTimeout(() => {
       rippleHide(e)
     })
     return
@@ -230,7 +238,7 @@ function rippleHide (e: Event) {
 function rippleCancelShow (e: MouseEvent | TouchEvent) {
   const element = e.currentTarget as HTMLElement | undefined
 
-  if (!element || !element._ripple) return
+  if (!element?._ripple) return
 
   if (element._ripple.showTimerCommit) {
     element._ripple.showTimerCommit = null
@@ -254,30 +262,34 @@ function keyboardRippleHide (e: KeyboardEvent) {
 }
 
 function focusRippleHide (e: FocusEvent) {
-  if (keyboardRipple === true) {
+  if (keyboardRipple) {
     keyboardRipple = false
     rippleHide(e)
   }
 }
 
-function updateRipple (el: HTMLElement, binding: VNodeDirective, wasEnabled: boolean) {
-  const enabled = isRippleEnabled(binding.value)
+function updateRipple (el: HTMLElement, binding: RippleDirectiveBinding, wasEnabled: boolean) {
+  const { value, modifiers } = binding
+  const enabled = isRippleEnabled(value)
   if (!enabled) {
     ripples.hide(el)
   }
-  el._ripple = el._ripple || {}
+
+  el._ripple = el._ripple ?? {}
   el._ripple.enabled = enabled
-  const value = binding.value || {}
-  if (value.center) {
-    el._ripple.centered = true
+  el._ripple.centered = modifiers.center
+  el._ripple.circle = modifiers.circle
+  if (isObject(value) && value.class) {
+    el._ripple.class = value.class
   }
-  if (value.class) {
-    el._ripple.class = binding.value.class
-  }
-  if (value.circle) {
-    el._ripple.circle = value.circle
-  }
+
   if (enabled && !wasEnabled) {
+    if (modifiers.stop) {
+      el.addEventListener('touchstart', rippleStop, { passive: true })
+      el.addEventListener('mousedown', rippleStop)
+      return
+    }
+
     el.addEventListener('touchstart', rippleShow, { passive: true })
     el.addEventListener('touchend', rippleHide, { passive: true })
     el.addEventListener('touchmove', rippleCancelShow, { passive: true })
@@ -313,27 +325,16 @@ function removeListeners (el: HTMLElement) {
   el.removeEventListener('blur', focusRippleHide)
 }
 
-function directive (el: HTMLElement, binding: VNodeDirective, node: VNode) {
+function mounted (el: HTMLElement, binding: RippleDirectiveBinding) {
   updateRipple(el, binding, false)
-
-  if (process.env.NODE_ENV === 'development') {
-    // warn if an inline element is used, waiting for el to be in the DOM first
-    node.context && node.context.$nextTick(() => {
-      const computed = window.getComputedStyle(el)
-      if (computed && computed.display === 'inline') {
-        const context = (node as any).fnOptions ? [(node as any).fnOptions, node.context] : [node.componentInstance]
-        consoleWarn('v-ripple can only be used on block-level elements', ...context)
-      }
-    })
-  }
 }
 
-function unbind (el: HTMLElement) {
+function unmounted (el: HTMLElement) {
   delete el._ripple
   removeListeners(el)
 }
 
-function update (el: HTMLElement, binding: VNodeDirective) {
+function updated (el: HTMLElement, binding: RippleDirectiveBinding) {
   if (binding.value === binding.oldValue) {
     return
   }
@@ -343,9 +344,9 @@ function update (el: HTMLElement, binding: VNodeDirective) {
 }
 
 export const Ripple = {
-  bind: directive,
-  unbind,
-  update,
+  mounted,
+  unmounted,
+  updated,
 }
 
 export default Ripple

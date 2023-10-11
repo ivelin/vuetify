@@ -1,7 +1,6 @@
 <template>
   <div class="text-center">
     <v-btn
-      dark
       color="indigo"
       @click="snackbar = true"
     >
@@ -10,15 +9,16 @@
 
     <v-snackbar
       v-model="snackbar"
-      :vertical="vertical"
+      vertical
     >
-      {{ text }}
+      <div class="text-subtitle-1 pb-2">This is a snackbar message</div>
 
-      <template v-slot:action="{ attrs }">
+      <p>This is a longer paragraph explaining something</p>
+
+      <template v-slot:actions>
         <v-btn
           color="indigo"
-          text
-          v-bind="attrs"
+          variant="text"
           @click="snackbar = false"
         >
           Close
@@ -28,12 +28,16 @@
   </div>
 </template>
 
+<script setup>
+  import { ref } from 'vue'
+
+  const snackbar = ref(false)
+</script>
+
 <script>
   export default {
     data: () => ({
       snackbar: false,
-      text: 'Lorem ipsum dolor sit amet',
-      vertical: true,
     }),
   }
 </script>

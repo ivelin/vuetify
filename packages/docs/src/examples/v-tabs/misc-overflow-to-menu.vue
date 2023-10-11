@@ -1,9 +1,7 @@
 <template>
   <v-card>
     <v-toolbar
-      color="deep-purple accent-4"
-      dark
-      flat
+      color="deep-purple-accent-4"
     >
       <v-app-bar-nav-icon></v-app-bar-nav-icon>
 
@@ -23,36 +21,34 @@
         <v-tabs
           v-model="currentItem"
           fixed-tabs
-          slider-color="white"
         >
           <v-tab
             v-for="item in items"
             :key="item"
-            :href="'#tab-' + item"
+            :value="'tab-' + item"
           >
             {{ item }}
           </v-tab>
 
           <v-menu
             v-if="more.length"
-            bottom
-            left
           >
-            <template v-slot:activator="{ on, attrs }">
+            <template v-slot:activator="{ props }">
               <v-btn
-                text
-                class="align-self-center mr-4"
-                v-bind="attrs"
-                v-on="on"
+                variant="plain"
+                rounded="0"
+                class="align-self-center me-4"
+                height="100%"
+                v-bind="props"
               >
                 more
-                <v-icon right>
+                <v-icon end>
                   mdi-menu-down
                 </v-icon>
               </v-btn>
             </template>
 
-            <v-list class="grey lighten-3">
+            <v-list class="bg-grey-lighten-3">
               <v-list-item
                 v-for="item in more"
                 :key="item"
@@ -66,8 +62,8 @@
       </template>
     </v-toolbar>
 
-    <v-tabs-items v-model="currentItem">
-      <v-tab-item
+    <v-window v-model="currentItem">
+      <v-window-item
         v-for="item in items.concat(more)"
         :key="item"
         :value="'tab-' + item"
@@ -78,10 +74,38 @@
             {{ text }}
           </v-card-text>
         </v-card>
-      </v-tab-item>
-    </v-tabs-items>
+      </v-window-item>
+    </v-window>
   </v-card>
 </template>
+
+<script setup>
+  import { nextTick, ref } from 'vue'
+
+  const text = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.'
+
+  const currentItem = ref('tab-Web')
+  const items = ref([
+    'Web',
+    'Shopping',
+    'Videos',
+    'Images',
+  ])
+  const more = ref([
+    'News',
+    'Maps',
+    'Books',
+    'Flights',
+    'Apps',
+  ])
+
+  function addItem (item) {
+    const removed = items.value.splice(0, 1)
+    items.value.push(...more.value.splice(more.value.indexOf(item), 1))
+    more.value.push(...removed)
+    nextTick(() => { currentItem.value = 'tab-' + item })
+  }
+</script>
 
 <script>
   export default {

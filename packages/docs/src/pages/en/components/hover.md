@@ -1,5 +1,6 @@
 ---
 meta:
+  nav: Hover
   title: Hover component
   description: The hover component makes it easy respond when the user hover events by wrapping selectable content.
   keywords: hover, vuetify hover component, vue hover component
@@ -7,25 +8,33 @@ related:
   - /components/cards/
   - /components/images/
   - /components/tooltips/
+features:
+  github: /components/VHover/
+  label: 'C: VHover'
+  report: true
 ---
 
 # Hover
 
-The `v-hover` component provides a clean interface for handling hover states for any component.
+The `v-hover` component provides a simple interface for handling hover states for any component.
 
-<entry-ad />
+<page-features />
 
 ## Usage
 
-The `v-hover` component is a wrapper that should contain only one child element, and can trigger an event when hovered over. In order for `v-hover` to work properly, either the **value** prop should be set to `true` or the wrapped element should contain `v-slot="{ wrapper }"`.
+ `v-hover` is a renderless component that uses the default slot to provide scoped access to its internal model; as well as mouse event listeners to modify it. To explicitly control the internal state, use the **model-value** property.
 
 <usage name="v-hover" />
 
+<entry />
+
 ## API
 
-- [v-hover](/api/v-hover)
+| Component | Description |
+| - | - |
+| [v-hover](/api/v-hover/) | Primary Component |
 
-<inline-api page="components/hover" />
+<api-inline hide-links />
 
 ## Examples
 
@@ -56,5 +65,3 @@ Delay `v-hover` events by using **open-delay** and **close-delay** props in comb
 Create highly customized components that respond to user interaction.
 
 <example file="v-hover/misc-transition" />
-
-<backmatter />

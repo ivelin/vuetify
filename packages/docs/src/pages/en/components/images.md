@@ -1,19 +1,24 @@
 ---
 meta:
+  nav: Images
   title: Image component
   description: The image component provides a flexible interface for displaying different types of images.
   keywords: images, vuetify image component, vue image component
 related:
-  - /components/grids/
-  - /components/aspect-ratios/
-  - /components/parallax/
+  - /components/grids
+  - /components/aspect-ratios
+  - /components/parallax
+features:
+  github: /components/VImg/
+  label: 'C: VImg'
+  report: true
 ---
 
 # Images
 
 The `v-img` component is packed with features to support rich media. Combined with the [vuetify-loader](https://github.com/vuetifyjs/vuetify-loader), you can add dynamic progressive images to provide a better user experience.
 
-<entry-ad />
+<page-features />
 
 ## Usage
 
@@ -21,43 +26,32 @@ The `v-img` component is packed with features to support rich media. Combined wi
 
 <usage name="v-img" />
 
+<entry />
+
 ## API
 
-- [v-img](/api/v-img)
+| Component | Description |
+| - | - |
+| [v-img](/api/v-img/) | Primary Component |
 
-<inline-api page="components/images" />
+<api-inline hide-links />
 
 ## Caveats
 
-<alert type="info">
-
-  The `v-img` component uses the [v-intersect](/directives/intersect) directive which requires a [Polyfill](/directives/intersect#polyfill) for IE11 and Safari. If a browser that does not support this functionality is detected, the image will still load as normal.
-
-</alert>
+::: warning
+  The **lazy-src** property has no effect unless either **height** or **aspect-ratio** are provided. This is because
+  the image container needs a non-zero height in order for the temporary image to be shown.
+:::
 
 ## Examples
 
 ### Props
 
-#### Aspect ratio
+#### Cover
 
-You can set a fixed aspect ratio if you want to change aspect ratio of the image.
+If the provided aspect ratio doesn't match that of the actual image, the default behavior is to fill as much space as possible without cropping. To fill the entire available space use the `cover` prop.
 
-<example file="v-img/prop-aspect-ratio" />
-
-<promoted-ad slug="vuetify-zero-theme-pro" />
-
-#### Contain
-
-If the provided aspect ratio doesn't match that of the actual image, the default behavior is to fill as much space as possible, clipping the sides of the image. Enabling the `contain` prop will prevent this, but will result in empty space at the sides.
-
-<example file="v-img/prop-contain" />
-
-#### Gradients
-
-The `gradient` prop can be used to apply a simple gradient overlay to the image. More complex gradients should be written as a class on the content slot instead.
-
-<example file="v-img/prop-gradient" />
+<example file="v-img/prop-cover" />
 
 #### Height
 
@@ -73,7 +67,36 @@ The `gradient` prop can be used to apply a simple gradient overlay to the image.
 
 <example file="v-img/slot-placeholder" />
 
+#### Error
+
+`v-img` has an `error` slot that can be used to display alternative content if an error occurs while loading your source image. A common use for this slot is to load a fallback image if your original image is not available.
+
+<example file="v-img/slot-error" />
+
 ### Misc
+
+#### Future image formats
+
+By default `v-img` will render a basic `<img>` element. If you want to use `.webp` images with a fallback for older browsers, you can pass a list of `<source>` elements to the `sources` slot:
+
+```html
+<v-img src="image.jpeg">
+  <template #sources>
+    <source srcset="image.webp">
+  </template>
+</v-img>
+```
+
+This will behave similarly to:
+
+```html
+<picture>
+  <source srcset="image.webp">
+  <img src="image.jpeg">
+</picture>
+```
+
+`srcset` and `media` attributes can also be used for art direction or alternate sizes, see [MDN](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/picture) for more.
 
 #### Grid
 
@@ -81,4 +104,8 @@ You can use `v-img` to make, for example, a picture gallery.
 
 <example file="v-img/misc-grid" />
 
-<backmatter />
+#### Complex Grid Layout
+
+Build a more complex picture gallery layout using `flex-box` classes.
+
+<example file="v-img/complex-grid" />

@@ -15,8 +15,8 @@
     </v-radio-group>
     <hr>
     <v-radio-group
-      v-model="row"
-      row
+      v-model="inline"
+      inline
     >
       <v-radio
         label="Option 1"
@@ -30,12 +30,19 @@
   </v-container>
 </template>
 
+<script setup>
+  import { ref } from 'vue'
+
+  const column = ref(null)
+  const inline = ref(null)
+</script>
+
 <script>
   export default {
     data () {
       return {
         column: null,
-        row: null,
+        inline: null,
       }
     },
   }

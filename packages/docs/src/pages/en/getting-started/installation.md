@@ -1,328 +1,375 @@
 ---
 meta:
-  title: Get started with Vuetify
-  description: Get started with Vue and Vuetify in no time. Support for Vue CLI, Webpack, Nuxt and more.
-  keywords: quick start, vuetify templates, installing vuetify, install vuetify
+  nav: Installation
+  title: Get started with Vuetify 3
+  description: Details for v3 release - faq, changes, and upgrading.
+  keywords: migration, releases, upgrading vuetify, beta, v3
 related:
-  - /introduction/why-vuetify/
-  - /getting-started/frequently-asked-questions/
-  - /getting-started/browser-support/
+  - /getting-started/contributing/
+  - /introduction/roadmap/
+  - /getting-started/release-notes/
 ---
 
-# Installation
+<script setup>
+  import { version } from 'vuetify'
+</script>
+
+# Get started with Vuetify 3
 
 Get started with Vuetify, the world’s most popular Vue.js framework for building feature rich, blazing fast applications.
 
-<entry-ad />
+<entry />
 
-## Vue CLI Install
+## Installation
 
-<alert type="error">
+Vuetify has support for multiple different installation paths with the most common scaffolding tool being [create-vuetify](https://github.com/vuetifyjs/create-vuetify)
 
-  The current version of Vuetify does not support Vue 3. Support for Vue 3 will come with the release of [Vuetify v3](/introduction/roadmap/#v30-titan). When creating a new project, please ensure you selected Vue 2 from the Vue CLI prompts, or that you are installing to an existing Vue 2 project.
+For more information regarding supported package managers, please visit their official websites:
 
-</alert>
+* [yarn](https://yarnpkg.com/)
+* [npm](https://npmjs.org/)
+* [pnpm](https://pnpm.io/)
+* [bun](https://bun.sh/package-manager)
 
-<alert type="warning">
+## Using Vite
 
-  For information on how to use Vue CLI, visit the [official documentation](https://cli.vuejs.org/).
+To get started with Vuetify 3, simply paste the following code into your terminal:
 
-</alert>
+::: tabs
 
-If you have not already created a new Vue.js project using **Vue CLI**, you can do so by typing:
+```bash [yarn]
+yarn create vuetify
+```
+
+```bash [npm]
+npm create vuetify
+```
+
+```bash [pnpm]
+pnpm create vuetify
+```
+
+```bash [bun]
+bun create vuetify
+```
+
+:::
+
+This command prompts you with a few options before generating your scaffolded Vue / Vuetify 3 project.
 
 ```bash
-vue create my-app
-# navigate to new project directory
-cd my-app
+success Installed "create-vuetify@x.x.x" with binaries:
+    - create-vuetify
+
+? Project name: ❯ vuetify-project // the folder to generate your application
+? Use TypeScript?: ❯ No / Yes
+? Would you like to install dependencies with yarn, npm, or pnpm?:
+  ❯ yarn
+    npm
+    pnpm
+    bun
+    none
 ```
 
-Now that you have an instantiated project, you can add the Vuetify [Vue CLI package](https://github.com/vuetifyjs/vue-cli-plugins/tree/master/packages/vue-cli-plugin-vuetify-cli) using the cli.
+After making your selections, [create-vuetify](https://github.com/vuetifyjs/create-vuetify) will generate the structure for your new application.
+
+Once the scaffold is complete, start the vite development server by running the following commands:
 
 ```bash
-vue add vuetify
+cd vuetify-project
+yarn dev
 ```
 
-<alert type="warning">
+## Using Nuxt 3
 
-  This command will make changes to your project template files, components folder, vue.config.js, etc. If you are installing Vuetify via Vue-CLI, make sure you commit your code to avoid any potential data loss. Template changes can be skipped by selecting the advanced install option during install.
+[Nuxt](https://nuxt.com/) is an open-source framework that has helpful features to quickly get you started with developing a full-stack Vue app, such as file-based routing, SSR and component auto-imports. Nuxt is powered by Vite, so the steps to get Vuetify working in Nuxt 3 are quite similar to the manual steps described above.
 
-</alert>
+Start off creating a nuxt app by executing the following commands:
 
-### Vue UI install
+::: tabs
 
-Vuetify can also be installed using **Vue UI**, the new visual application for Vue CLI. Ensure that you have the latest version of Vue CLI installed, then from your terminal type:
-
-```bash
-# ensure Vue CLI is >= 3.0
-vue --version
-
-# Then start the UI
-vue ui
+```bash [yarn]
+yarn create nuxt-app <project-name>
+cd <project-name>
+yarn
 ```
 
-This will start the Vue User Interface and open a new window in your browser. On the left side of your screen, click on **Plugins**. Once there, search for Vuetify in the input field and install the plugin.
-
-![Install Vuetify Plugin](https://cdn.vuetifyjs.com/images/quick-start/vue_ui.png "Vue UI Vuetify Plugin")
-
-## Nuxt install
-
-Vuetify can be added by installing the Nuxt Vuetify module.
-
-```bash
-yarn add @nuxtjs/vuetify -D
-# OR
-npm install @nuxtjs/vuetify -D
+```bash [npm]
+npx nuxi@latest init <project-name>
+cd <project-name>
+npm install
 ```
 
-Once installed, update your nuxt.config.js file to include the Vuetify module in the build.
-
-```js
-// nuxt.config.js
-{
-  buildModules: [
-    // Simple usage
-    '@nuxtjs/vuetify',
-
-    // With options
-    ['@nuxtjs/vuetify', { /* module options */ }]
-  ]
-}
+```bash [pnpm]
+pnpm dlx nuxi@latest init <project-name>
+# Make sure you have `shamefully-hoist=true` in `.npmrc` before running pnpm install
+cd <project-name>
+pnpm install
 ```
 
-<alert type="info">
-
-  [Find more information for the Nuxt Community module on GitHub](https://github.com/nuxt-community/vuetify-module)
-
-</alert>
-
-## Webpack install
-
-To install Vuetify into a Webpack project you need to add a few dependencies:
-
-```bash
-yarn add vuetify
-# OR
-npm install vuetify
+```bash [bun]
+bunx nuxi@latest init <project-name>
+cd <project-name>
+bun install
 ```
 
-```bash
-yarn add sass@~1.32 sass-loader deepmerge -D
-# OR
-npm install sass@~1.32 sass-loader deepmerge -D
+:::
+
+and then install the required Vuefity modules as dependencies:
+
+::: tabs
+
+```bash [yarn]
+yarn add -D vuetify vite-plugin-vuetify
+yarn add @mdi/font
 ```
 
-Once installed, locate your `webpack.config.js` file and copy the snippet below into the rules array. If you have an existing sass rule configured, you may need to apply some or all of the changes below. If you are looking to utilize the vuetify-loader for treeshaking, ensure that you are on version >=4 of Webpack. You can find more information on setting it up with webpack on the [Treeshaking](/features/treeshaking/) page.
+```bash [npm]
+npm i -D vuetify vite-plugin-vuetify
+npm i @mdi/font
+```
 
-```js
-// webpack.config.js
+```bash [pnpm]
+pnpm i -D vuetify vite-plugin-vuetify
+pnpm i @mdi/font
+```
 
-module.exports = {
-  module: {
-    rules: [
-      {
-        test: /\.s(c|a)ss$/,
-        use: [
-          'vue-style-loader',
-          'css-loader',
-          {
-            loader: 'sass-loader',
-            // Requires sass-loader@^7.0.0
-            options: {
-              implementation: require('sass'),
-              indentedSyntax: true // optional
-            },
-            // Requires >= sass-loader@^8.0.0
-            options: {
-              implementation: require('sass'),
-              sassOptions: {
-                indentedSyntax: true // optional
-              },
-            },
-          },
-        ],
+```bash [bun]
+bun add -d vuetify vite-plugin-vuetify
+bun add @mdi/font
+```
+
+:::
+
+Next, integrate the following entries into your `nuxt.config.ts` file:
+
+```ts { data-resource="nuxt.config.ts" }
+import vuetify, { transformAssetUrls } from 'vite-plugin-vuetify'
+export default defineNuxtConfig({
+  //...
+  build: {
+    transpile: ['vuetify'],
+  },
+  modules: [
+    (_options, nuxt) => {
+      nuxt.hooks.hook('vite:extendConfig', (config) => {
+        // @ts-expect-error
+        config.plugins.push(vuetify({ autoImport: true }))
+      })
+    },
+    //...
+  ],
+  vite: {
+    vue: {
+      template: {
+        transformAssetUrls,
       },
-    ],
-  }
+    },
+  },
 }
 ```
 
-Create a plugin file for Vuetify, `src/plugins/vuetify.js` with the below content:
+Nuxt allows you to change its Vite config by using its built-in hook `vite:extendConfig`. In its callback function, add the Vuetify plugin to the array of Vite plugins. To resolve relative asset URLs that are passed to Vuetify components such as `VImg` (e.g. `~/assets/img/some.png`) the `transformAssetUrls` function needs to be added in the `vite` entry .
 
-```js
-// src/plugins/vuetify.js
+In the next step, initialize Vuetify and add it to the main Vue app instance. This can be done in the `plugins` folder as any plugin that is placed in this folder will be automatically loaded by Nuxt at startup.
 
-import Vue from 'vue'
-import Vuetify from 'vuetify'
-import 'vuetify/dist/vuetify.min.css'
+```ts { data-resource="~/plugins/vuetify.ts" }
+import '@mdi/font/css/materialdesignicons.css'
+import 'vuetify/styles'
+import { createVuetify } from 'vuetify'
 
-Vue.use(Vuetify)
-
-const opts = {}
-
-export default new Vuetify(opts)
+export default defineNuxtPlugin((app) => {
+  const vuetify = createVuetify({
+    // ... your configuration
+  })
+  app.vueApp.use(vuetify)
+})
 ```
 
-If using vuetify-loader use the content below:
+Finally, add Vuetify's root `VApp` component either in `~/app.vue` or `~/layouts/default.vue`, for example:
 
-```js
-// src/plugins/vuetify.js
-
-import Vue from 'vue'
-import Vuetify from 'vuetify/lib'
-
-Vue.use(Vuetify)
-
-const opts = {}
-
-export default new Vuetify(opts)
-```
-
-Navigate to your main entry point where you instantiate your Vue instance and pass the Vuetify object in as an option.
-
-```js
-// src/main.js
-
-import Vue from 'vue'
-import vuetify from '@/plugins/vuetify' // path to vuetify export
-
-new Vue({
-  vuetify,
-}).$mount('#app')
-```
-
-### Font installation
-
-Vuetify uses Google's Roboto font and Material Design Icons. The simplest way to install these are to include their CDN's in your main `index.html` file.
-
-```html
-<link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
-<link href="https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css" rel="stylesheet">
-```
-
-## Usage with CDN
-
-To test using Vuetify without installing a template from Vue CLI, copy the code below into your `index.html` file. This will pull the latest version of Vue and Vuetify, allowing you to start playing with components. You can also use the [Vuetify starter](https://template.vuetifyjs.com) on Codepen. While not recommended, if you need to utilize the CDN packages in a production environment, it is recommended that you scope the versions of your assets. For more information on how to do this, navigate to the jsdelivr website.
-
-<alert type="warning">
-
-  In order for your application to work properly, you must wrap it in a `v-app` component. See the Application component page for more information.
-
-</alert>
-
-```html
-<!DOCTYPE html>
-<html>
-<head>
-  <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
-</head>
-<body>
-  <div id="app">
+```html { data-resource="app.vue" }
+<template>
+  <NuxtLayout>
     <v-app>
-      <v-main>
-        <v-container>Hello world</v-container>
-      </v-main>
+      <NuxtPage />
     </v-app>
-  </div>
-
-  <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
-  <script>
-    new Vue({
-      el: '#app',
-      vuetify: new Vuetify(),
-    })
-  </script>
-</body>
-</html>
+  </NuxtLayout>
+</template>
 ```
 
-## Usage with Electron
+or
 
-To use Vuetify with Electron, add the electron-builder plugin via Vue CLI.
-
-```bash
-# Install
-vue add electron-builder
-
-# Usage
-yarn electron:build
-yarn electron:serve
+```html { data-resource="~/layouts/default.vue" }
+<template>
+  <v-app>
+    <!-- .... -->
+  </v-app>
+</template>
 ```
 
-## Usage with PWA
+You should now have access to all Vuetify components and tools in Nuxt app.
 
-If you are creating a new app with Vue CLI, you have the option to select Progressive Web App (PWA) Support in the first prompt after initiating vue create my-app. This package can also be installed into existing Vue CLI projects by entering the following command:
-
-```bash
-vue add pwa
-```
-
-## Usage with Cordova
-
-To use Vuetify with Cordova, add the Cordova plugin via Vue CLI:
-
-```bash
-# If cordova is not already installed
-yarn global add cordova
-
-# Install
-vue add cordova
-
-# Usage
-yarn cordova-serve-android # Development Android
-yarn cordova-build-android # Build Android
-yarn cordova-serve-ios # Development IOS
-yarn cordova-build-ios # Build IOS
-yarn cordova-serve-browser # Development Browser
-yarn cordova-build-browser # Build Browser
-```
-
-## Usage with Capacitor
-
-To use Vuetify with **Capacitor**, add the [Capacitor](https://github.com/capacitor-community/vue-cli-plugin-capacitor) plugin via Vue CLI:
-
-```bash
-# Install
-$ vue add @nklayman/capacitor
-
-# Usage
-$ yarn capacitor:serve
-```
-
-## Usage with Vuepress
-
-There are 2 ways we can use Vuetify with default **vuepress** theme. Either by  registering vuetify as a plugin in [vuepress](https://vuepress.vuejs.org/) `.vuepress/enhanceApp.js` file (code sample below), or by using vuetify directly from CDN:
+## Using Laravel Mix
 
 ```js
-// register vuetify as a global plugin with vuepress
-// .vuepress/enhanceApp.js
-import Vuetify from 'vuetify'
+import { createApp } from 'vue'
+import App from './App.vue'
 
-export default ({
-  Vue,      // the version of Vue being used in the VuePress app
-  options,  // the options for the root Vue instance
-  router,   // the router instance for the app
-  siteData,  // site metadata
-}) => {
-  Vue.use(Vuetify)
-}
+// Vuetify
+import '@mdi/font/css/materialdesignicons.css'
+import 'vuetify/styles'
+import { createVuetify } from 'vuetify'
+import * as components from 'vuetify/components'
+import * as directives from 'vuetify/directives'
 
-// Alternatively, use vuetify directly from CDN.
-// Update head section in .vuepress/config.js as follows
-module.exports = {
-  head: [
-    ['link', {
-      rel: 'stylesheet',
-      href: `https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css`
-    }],
-    ['script', { src: `https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js` }],
-    ['script', { src: `https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js` }],
-  ]
-}
+const vuetify = createVuetify({
+  components,
+  directives
+})
+
+createApp(App).use(vuetify).mount('#app')
 ```
 
-<backmatter />
+To import the fonts you need to add to webpack.mix.js:
+
+```js
+mix.copy('node_modules/@mdi/font/fonts/', 'dist/fonts/')
+```
+
+## Using CDN
+
+We recommend using the latest version of Vuetify 3 from [jsdelivr](https://www.jsdelivr.com/). All components and styles are included.
+
+`https://cdn.jsdelivr.net/npm/vuetify@{{ version }}/dist/vuetify.min.css` { .text-truncate }
+
+`https://cdn.jsdelivr.net/npm/vuetify@{{ version }}/dist/vuetify.min.js` { .text-truncate }
+
+```js
+const { createApp } = Vue
+const { createVuetify } = Vuetify
+
+const vuetify = createVuetify()
+
+const app = createApp()
+app.use(vuetify).mount('#app')
+```
+
+## Existing projects
+
+Follow these steps if for example you are adding Vuetify to an existing project, or simply do not want to use a scaffolding tool.
+
+::: tabs
+
+```bash [yarn]
+yarn add vuetify
+```
+
+```bash [npm]
+npm i vuetify
+```
+
+```bash [pnpm]
+pnpm i vuetify
+```
+
+```bash [bun]
+bun add vuetify
+```
+
+:::
+
+::: tip
+
+If you are upgrading from an earlier version of Vuetify, make sure to check out our [Upgrade Guide](/getting-started/upgrade-guide/)
+
+:::
+
+In the file where you create the Vue application, add the following code
+
+```js
+import { createApp } from 'vue'
+import App from './App.vue'
+
+// Vuetify
+import 'vuetify/styles'
+import { createVuetify } from 'vuetify'
+import * as components from 'vuetify/components'
+import * as directives from 'vuetify/directives'
+
+const vuetify = createVuetify({
+  components,
+  directives,
+})
+
+createApp(App).use(vuetify).mount('#app')
+```
+
+This will include all components and directives regardless of whether or not you are using them. If you instead only want to include used components, have a look at the [Vite](https://npmjs.com/package/vite-plugin-vuetify) or [Webpack](https://npmjs.com/package/webpack-plugin-vuetify) plugins, depending on your setup. The plugins also makes it possible to customize SCSS variables.
+
+Lastly, do not forget to install [icons](/features/icon-fonts/).
+
+## SSR caveats
+
+Vue 3 has no way to automatically detect if SSR is used &mdash; so nuxt, gridsome, and other SSR frameworks must manually set the `ssr` option to `true` in order to properly render the application.
+
+```js { data-resource="src/plugins/vuetify.js" }
+import '@mdi/font/css/materialdesignicons.css'
+import 'vuetify/styles'
+
+const vuetify = createVuetify({
+  ssr: true,
+})
+```
+
+## Exposed exports
+
+The following export paths exist for the Vuetify framework:
+
+### JS / TS
+
+| Name                             | Description                                                                                                                                        |
+|----------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------|
+| `vuetify`                        | Main entry point. Contains `createVuetify()` and public composables.                                                                               |
+| `vuetify/styles`                 | Precompiled global CSS (reset, utilities, etc.), no component styles. Will be redirected to SASS if `styles.configFile` is set in vite or webpack. |
+| `vuetify/components`             | All components. Not recommended as it will include all components during development, slowing down your build.                                     |
+| `vuetify/components/<name>`      | Individual components. Grouped by top-level name, for example VListItem, VListGroup, and VListItemTitle are all in `vuetify/components/VList`.     |
+| `vuetify/directives`             | All directives.                                                                                                                                    |
+| `vuetify/directives/<name>`      | Individual directives.                                                                                                                             |
+| `vuetify/blueprints/<name>`      | Preset collections of prop defaults.                                                                                                               |
+| `vuetify/locale`                 | Translations for strings in vuetify components. Each language is a named export.                                                                   |
+| `vuetify/locale/adapters/<name>` | Adapters to retrieve translations from other libraries such as vue-i18n.                                                                           |
+| `vuetify/iconsets/<name>`        | Icon presets, see [Icon Fonts](/features/icon-fonts/)                                                                                              |
+
+### SASS
+
+See [SASS Variables](/features/sass-variables/) for more information.
+
+| Name               | Description                                                                                     |
+|--------------------|-------------------------------------------------------------------------------------------------|
+| `vuetify`          | Global CSS (reset, utilities, etc.), no component styles. Equivalent to `vuetify/styles` in JS. |
+| `vuetify/settings` | All SASS variables, including component variables.                                              |
+| `vuetify/tools`    | Mixins and functions.                                                                           |
+
+## Nightly Builds
+
+The three development branches (`master`, `dev`, and `next`) are automatically published to NPM at 1200 UTC under the [`@vuetify/nightly`](https://www.npmjs.com/package/@vuetify/nightly?activeTab=versions) namespace. They may be outdated or buggy and are therefore not officially supported and are only supplied for testing purposes. These builds can be installed with a [package alias](https://docs.npmjs.com/cli/v8/commands/npm-install#:~:text=Install%20a%20package%20under%20a%20custom%20alias).
+
+| Branch name | Purpose          | package.json entry                         | Changelog                                                           |
+|-------------|------------------|--------------------------------------------|---------------------------------------------------------------------|
+| `master`    | Bug fixes        | `"vuetify": "npm:@vuetify/nightly@latest"` | [Changelog](https://unpkg.com/@vuetify/nightly@latest/CHANGELOG.md) |
+| `dev`       | New features     | `"vuetify": "npm:@vuetify/nightly@dev"`    | [Changelog](https://unpkg.com/@vuetify/nightly@dev/CHANGELOG.md)    |
+| `next`      | Breaking changes | `"vuetify": "npm:@vuetify/nightly@next"`   | [Changelog](https://unpkg.com/@vuetify/nightly@next/CHANGELOG.md)   |
+
+```diff
+ "devDependencies": {
+-  "vuetify": "^3.3.0"
++  "vuetify": "npm:@vuetify/nightly@3.3.0-master.2023-05-21"
+ }
+```
+
+## Questions
+
+Have a question that belongs here? Tell us in our [Discord Community](https://community.vuetifyjs.com/) or create a request on our [Issue Generator](https://issues.vuetifyjs.com/).
+
+<promoted slug="vuetify-discord" />

@@ -1,5 +1,6 @@
 export default {
   badge: 'badge',
+  open: 'Open',
   close: 'Close',
   dataIterator: {
     noResultsText: 'Geen ooreenstemmende resultate is gevind nie',
@@ -26,12 +27,21 @@ export default {
     lastPage: 'Laaste bladsy',
     pageText: '{0}-{1} van {2}',
   },
+  dateRangeInput: {
+    divider: 'to',
+  },
   datePicker: {
-    itemsSelected: '{0} gekies',
-    nextMonthAriaLabel: 'Volgende maand',
-    nextYearAriaLabel: 'Volgende jaar',
-    prevMonthAriaLabel: 'Vorige maand',
-    prevYearAriaLabel: 'Vorige jaar',
+    ok: 'OK',
+    cancel: 'Cancel',
+    range: {
+      title: 'Select dates',
+      header: 'Enter dates',
+    },
+    title: 'Select date',
+    header: 'Enter date',
+    input: {
+      placeholder: 'Enter date',
+    },
   },
   noDataText: 'Geen data is beskikbaar nie',
   carousel: {
@@ -44,6 +54,12 @@ export default {
   calendar: {
     moreEvents: '{0} meer',
   },
+  input: {
+    clear: 'Clear {0}',
+    prependAction: '{0} prepended action',
+    appendAction: '{0} appended action',
+    otp: 'Please enter OTP character {0}',
+  },
   fileInput: {
     counter: '{0} files',
     counterSize: '{0} files ({1} in total)',
@@ -54,16 +70,27 @@ export default {
   },
   pagination: {
     ariaLabel: {
-      wrapper: 'Paginasie-navigasie',
+      root: 'Paginasie-navigasie',
       next: 'Volgende bladsy',
       previous: 'Vorige bladsy',
       page: 'Gaan na bladsy {0}',
       currentPage: 'Huidige bladsy, Bladsy {0}',
+      first: 'First page',
+      last: 'Last page',
     },
+  },
+  stepper: {
+    next: 'Next',
+    prev: 'Previous',
   },
   rating: {
     ariaLabel: {
-      icon: 'Rating {0} of {1}',
+      item: 'Rating {0} of {1}',
     },
+  },
+  loading: 'Loading...',
+  infiniteScroll: {
+    loadMore: 'Load more',
+    empty: 'No more',
   },
 }
